@@ -73,7 +73,7 @@ function updateIDs(filename, dom, argv) {
           // MB: In case the href contains a starting slash, we need to remove the empty array element
           let hrefIsToThisBook = true
           if (href.match(/\//)) {
-            const hrefAsArray = href.replace(/^\.\.\//, '').split('/').filter( i => i != '')
+            const hrefAsArray = href.replace(/^\.\.\//, '').split('/').filter(i => i != '')
             if (hrefAsArray[0] === argv.book) {
               href = hrefAsArray.pop()
             } else {
@@ -116,43 +116,43 @@ function updateIDs(filename, dom, argv) {
   })
 }
 
-function getToCItems(items, dom, parent, init = false) {
-  let start = init;
-  for (let i = 0; i < items.length; i++) {
-    let item = items[i];
-    if (item && item.label && item.label.length && item.label.substring(0, 2) == '1.') {
-      start = true;
+function getToCItems(items, dom, parent) {
+  items.forEach(item => {
+    if (item && item.chapterOrAnnex) { // skip items that are not Chapter or Annex
+      let listElement = dom.window.document.createElement('li');
+      listElement.className = "toc-entry-title";
+      let refElement = dom.window.document.createElement('a');
+      refElement.href = '#' + item.id;
+      let spanElement = dom.window.document.createElement("span");
+      spanElement.className = "toc-entry-text"
+      spanElement.innerHTML = item.label.replace(/(<\/?strong>)/gi, "").replace(/(<\/?b>)/gi, ""); // remove strong/bold
+      refElement.appendChild(spanElement);
+      listElement.appendChild(refElement);
+      if (item.children && item.children.length) {
+        let olistElement = dom.window.document.createElement('ol');
+        olistElement.className = "toc-list";
+        listElement.appendChild(olistElement);
+        getToCItems(item.children, dom, olistElement);
+      }
+      parent.appendChild(listElement);
     }
-    if (!start) continue;  // skip all entries before clause 1
-    let listElement = dom.window.document.createElement('li');
-    listElement.className = "toc-entry-title";
-    let refElement = dom.window.document.createElement('a');
-    refElement.href = '#' + item.id;
-    let spanElement = dom.window.document.createElement("span");
-    spanElement.className = "toc-entry-text"
-    spanElement.innerHTML = item.label.replace(/(<\/?strong>)/gi, "").replace(/(<\/?b>)/gi, ""); // remove strong/bold
-    refElement.appendChild(spanElement);
-    listElement.appendChild(refElement);
-    if (item.children && item.children.length) {
-      let olistElement = dom.window.document.createElement('ol');
-      olistElement.className = "toc-list";
-      listElement.appendChild(olistElement);
-      getToCItems(item.children, dom, olistElement, start);
-    }
-    parent.appendChild(listElement);
-  };
+  });
 }
 
 function updateToC(data, dom) {
   const outputList = data.reduce((arr, { level, ...rest }) => {
     const value = { ...rest, children: [] }
     arr[level] = value.children
-    arr[level - 1].push(value)
+    let parent = arr[level - 1] ? arr[level - 1] :
+      arr[level - 2] ? arr[level - 2] :
+      arr[level - 3] ? arr[level - 3] :
+      arr[level - 4] ? arr[level - 4] : null; // in case parent does not exist, check parent of parent, up to 4 levels up
+    if (parent) { parent.push(value) }
     return arr
   }, [[]]).shift();
-  let tocElements = dom.window.document.getElementsByClassName('toc-list');
+  let tocElements = dom.window.document.getElementsByClassName('toc-list-auto');
   let tocElement = tocElements[tocElements.length - 1]; // get last element
-  if (!tocElement) return; // no toc-list placeholder found, so no need to generate ToC
+  if (!tocElement) return; // no toc-list-auto placeholder found, so no need to autogenerate ToC
   console.log('Embedding ToC...')
   getToCItems(outputList, dom, tocElement);
 }
@@ -164,15 +164,17 @@ function extractHeaders(dom, argv) {
 
   allHeadings.forEach(item => {
     if (!item.classList.contains('no-toc')) {
+      const inChapterOrAnnex = item.closest('.chapter') || item.closest('.annex'); // check if we are in Chapter or Annex
       headerElements.push({
         id: item.id,
         label: item.innerHTML,
-        level: parseInt(item.nodeName[1])
+        level: parseInt(item.nodeName[1]),
+        chapterOrAnnex: inChapterOrAnnex ? true : false
       });
     }
   });
   return headerElements;
-} 
+}
 
 // Merge source HTML files into a single file
 async function merge(argv) {
@@ -200,10 +202,10 @@ async function merge(argv) {
         const filename = fsPath.basename(filePath)
         dom = await updateIDs(filename, dom, argv)
 
-	      // extract headers 
+        // extract headers 
         const headers = extractHeaders(dom, argv);
         if (headers.length) {
-          tocEntries = [ ...tocEntries, ...headers ];
+          tocEntries = [...tocEntries, ...headers];
         }
 
         // If this is the first file, we'll use it as our base,

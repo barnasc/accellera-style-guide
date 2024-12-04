@@ -3,4 +3,4 @@ Extracted ToC will be added as part of HTML DOM processing.
 We only need to add the toc placeholder here
 {% endcomment %}
 
-<ol class="toc-list"></ol>
+<ol class="toc-list toc-list-auto"></ol>
