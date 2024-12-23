@@ -6,7 +6,17 @@
 }
 
 .no-space-below {
-  margin-bottom: 0;
+  margin-top: 0!important;
+  pre {
+    margin: 0!important; // for the code blocks
+  }
+}
+
+.no-space-above {
+  margin-bottom: 0!important;
+  pre {
+    margin: 0!important; // for the code blocks
+  }
 }
 
 .space-above {

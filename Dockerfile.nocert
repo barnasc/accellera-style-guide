@@ -93,7 +93,8 @@ RUN npm install -g npm@latest
 RUN npm install --global gulp-cli
 
 # Install bundler and jekyll
-RUN gem install jekyll bundler
+RUN gem install bundle:2.5.23
+RUN gem install jekyll
 
 # Install gems.
 COPY Gemfile .

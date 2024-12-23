@@ -31,3 +31,5 @@ gem "kramdown-parser-gfm"
 
 # For what ~> means, see https://robots.thoughtbot.com/rubys-pessimistic-operator
 
+# Custom rouge version including additiona syntax highlighting
+gem 'rouge', git: 'https://github.com/barnasc/rouge.git', branch: '3.30.0'
