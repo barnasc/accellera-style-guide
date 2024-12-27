@@ -42,7 +42,7 @@ th {
 }
 
 .table .table-body {
-  margin-bottom: 1.5 * $line-height-default;
+  margin-bottom: $line-height-default;
 
   .caption {
     font-family: $font-text-secondary;

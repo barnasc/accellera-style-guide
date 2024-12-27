@@ -7,7 +7,7 @@
 // from the end of the document (where kramdown gathers them)
 // to a container div beside their in-text references.
 
-function ebFootnotesToMove (wrapper) {
+function ebFootnotesToMove(wrapper) {
   'use strict'
 
   // If there are any footnotes ...
@@ -15,14 +15,14 @@ function ebFootnotesToMove (wrapper) {
     // ... and if the page-footnotes setting is on,
     // or at least on for one of the footnotes
     if (wrapper.hasAttribute('data-page-footnotes') ||
-        wrapper.querySelector('.footnotes .move-to-footnote')) {
+      wrapper.querySelector('.footnotes .move-to-footnote')) {
       // ... then return true
       return true
     }
   }
 }
 
-function ebMoveEndnoteToFootnote (noteReference) {
+function ebMoveEndnoteToFootnote(noteReference) {
   'use strict'
 
   // Get the footnote ID
@@ -71,20 +71,32 @@ function ebMoveEndnoteToFootnote (noteReference) {
   // and add a class to it.
   containingElement.parentNode.className += ' contains-footnote'
 
-  const footnoteSpan = document.createElement('span')
-  footnoteSpan.classList.add('page-footnote')
-  footnoteSpan.classList.add(pageFootnoteClass)
-  footnoteSpan.id = footnoteReferenceID
+  // footnotes in tables should be placed directly under the table
+  var footnoteInTable = containingElement.closest('.table');
+  if (footnoteInTable) {
+    let parent = document.getElementById(footnoteInTable.id + '-footnotes')
+    console.log('id', footnoteInTable.id, parent.children.length, noteReference.innerHTML);
+    let listElement = document.createElement('li');
+    listElement.innerHTML = '<span>' + endnote.querySelector('p').innerHTML + '</span>';
+    parent.appendChild(listElement);
+    noteReference.innerHTML = String.fromCharCode(96 + parent.children.length); // update footnote call
+  }
+  else {
+    const footnoteSpan = document.createElement('span')
+    footnoteSpan.classList.add('page-footnote')
+    footnoteSpan.classList.add(pageFootnoteClass)
+    footnoteSpan.id = footnoteReferenceID
 
-  footnoteSpan.innerHTML = '<span>' + endnote.querySelector('p').innerHTML + '</span>'
-  containingElement.insertBefore(footnoteSpan, footnoteReferenceContainer)
-  containingElement.removeChild(footnoteReferenceContainer)
+    footnoteSpan.innerHTML = '<span>' + endnote.querySelector('p').innerHTML + '</span>'
+    containingElement.insertBefore(footnoteSpan, footnoteReferenceContainer)
+    containingElement.removeChild(footnoteReferenceContainer)
+  }
 
   // Remove the old endnote
   endnote.parentNode.removeChild(endnote)
 }
 
-function ebFootnotesRenumberEndnotes () {
+function ebFootnotesRenumberEndnotes() {
   'use strict'
 
   // Get all the endnote lists in the doc
@@ -120,7 +132,7 @@ function ebFootnotesRenumberEndnotes () {
   })
 }
 
-function ebEndnotesToFootnotes (wrapper) {
+function ebEndnotesToFootnotes(wrapper) {
   'use strict'
 
   // Get all the a.footnote links we want to move
@@ -139,7 +151,7 @@ function ebEndnotesToFootnotes (wrapper) {
 }
 
 // If there are footnotes to move, move them.
-function ebFootnotesForPDF () {
+function ebFootnotesForPDF() {
   'use strict'
 
   var wrappers = document.querySelectorAll('.wrapper')

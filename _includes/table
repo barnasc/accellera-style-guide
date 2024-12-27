@@ -28,7 +28,7 @@ This allows for tables with IDs but without visible references. {% endcomment %}
 
 {% if include.markdown and include.markdown != "" %}
 <div class="table-md" markdown="1">
-{{ include.markdown | markdownify }}
+{{ include.markdown }}
 </div>
 {% endif %}
 
@@ -54,6 +54,10 @@ This allows for tables with IDs but without visible references. {% endcomment %}
     {% endif %}
 
 {% endif %}
+
+<!-- placeholder for custom table footnotes -->
+<ol class="table-footnotes" id="{{ table-reference | slugify: 'pretty' | remove: '.' }}-footnotes">
+</ol>
 
 </div><!--.table-body-->
 
