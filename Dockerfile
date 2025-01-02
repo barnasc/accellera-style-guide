@@ -85,16 +85,16 @@ RUN npm install --global gulp-cli
 # Install bundler and jekyll
 RUN gem install jekyll bundler
 
+# Switch to the user directory
+RUN useradd -ms /bin/bash adf
+WORKDIR /home/adf
+
 # Install gems.
 COPY Gemfile .
 RUN bundle install
 
-# Switch to the user account
-RUN useradd -ms /bin/bash adf
-USER adf
-WORKDIR /home/adf
-
 # Copy all flow elements to container
+USER adf
 COPY --chown=adf:adf . .
 
 # Install Accellera Documentation Flow
