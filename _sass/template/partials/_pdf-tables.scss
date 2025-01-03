@@ -27,6 +27,11 @@ $pdf-tables: true !default;
 
 		.table-body {
 			font-family: $font-text-main;
+
+			table {
+				margin: $line-height-default 0 0 0; // t r b l
+			}
+
 			p {
 				clear: both;
 				page-break-inside: avoid;
