@@ -20,6 +20,9 @@ download/
 tmp/
 .tmp/
 
+# ignore bundle config
+.bundle/
+
 # If your team needs strict node-package
 # version management, comment out this line
 # and commit package-lock.json.

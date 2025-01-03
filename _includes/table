@@ -1,41 +1,34 @@
 {% capture this-table %}
-{% comment %}
-To do: create HTML5 <figure> option here based on site.output
-{% endcomment %}
 
 {% include metadata %}
 
 {% comment %} Check the reference. If it's the same as the image name, hide it.
-This allows for figures with IDs but without visible references. {% endcomment %}
+This allows for tables with IDs but without visible references. {% endcomment %}
 {% assign table-reference-hidden = false %}
 {% capture table-reference %}{{ include.reference }}{% endcapture %}
 
-{% comment %}
-TODO: replace figure css styles by table css style
-{% endcomment %}
-
-<div class="figure{% if include.class %} {{ include.class }}{% endif %}"{% if table-reference %} id="{{ table-reference | slugify: 'pretty' | remove: '.' }}"{% endif %} role="figure" {% if include.caption %}aria-labelledby="{{ table-reference | slugify: 'pretty' | remove: '.' }}-caption"{% endif %}>
-<div class="figure-body">
+<div class="table{% if include.class %} {{ include.class }}{% endif %}"{% if table-reference %} id="{{ table-reference | slugify: 'pretty' | remove: '.' }}"{% endif %} role="table" {% if include.caption %}aria-labelledby="{{ table-reference | slugify: 'pretty' | remove: '.' }}-caption"{% endif %}>
+<div class="table-body">
 
 {% if include.slide-caption == nil and include.caption-position == "top" %}
 
     {% if table-reference-hidden == false or include.caption and include.caption != "" %}
     <p class="caption" markdown="1" id="{{ table-reference | slugify: 'pretty' | remove: '.' }}-caption">
-      {% if table-reference and table-reference-hidden == false %}<span class="figure-reference">{{ table-reference }}</span>{% endif %}{{ include.caption | markdownify | remove: '<p>' | remove: '</p>' | strip_newlines }}
+      {% if table-reference and table-reference-hidden == false %}<span class="table-reference">{{ table-reference }}</span>{% endif %}{{ include.caption | markdownify | remove: '<p>' | remove: '</p>' | strip_newlines }}
     </p>
     {% endif %}
 
 {% endif %}
 
 {% if include.html and include.html != "" %}
-<div class="figure-html">
+<div class="table-html">
 {{ include.html }}
 </div>
 {% endif %}
 
 {% if include.markdown and include.markdown != "" %}
-<div class="figure-md" markdown="1">
-{{ include.markdown | markdownify }}
+<div class="table-md" markdown="1">
+{{ include.markdown }}
 </div>
 {% endif %}
 
@@ -54,26 +47,28 @@ TODO: replace figure css styles by table css style
 {% if include.slide-caption == nil and include.caption-position != "top" %}
 
     {% if table-reference-hidden == false or include.caption and include.caption != "" %}
-    <p class="caption" markdown="1" id="{{ figure-reference | slugify: 'pretty' | remove: '.' }}-caption">
-      {% if table-reference and table-reference-hidden == false %}<span class="figure-reference">{{ table-reference }}</span>{% endif %}{{ include.caption | markdownify | remove: '<p>' | remove: '</p>' | strip_newlines }}
+    <p class="caption" markdown="1" id="{{ table-reference | slugify: 'pretty' | remove: '.' }}-caption">
+      {% if table-reference and table-reference-hidden == false %}<span class="table-reference">{{ table-reference }}</span>{% endif %}{{ include.caption | markdownify | remove: '<p>' | remove: '</p>' | strip_newlines }}
     </p>
 
     {% endif %}
 
 {% endif %}
 
-</div><!--.figure-body-->
+<!-- placeholder for custom table footnotes -->
+<ol class="table-footnotes" id="{{ table-reference | slugify: 'pretty' | remove: '.' }}-footnotes">
+</ol>
+
+</div><!--.table-body-->
 
 {% if include.source and include.source != "" %}
-
-<div class="figure-source">
+<div class="table-source">
 <p class="source" markdown="1">
 {{ include.source | markdownify | remove: '<p>' | remove: '</p>' | strip_newlines }}
 </p>
-</div><!--.figure-source-->
-
+</div><!--.table-source-->
 {% endif %}
 
-</div>
+</div><!--.table-->
 {% endcapture %}
 {{ this-table }}

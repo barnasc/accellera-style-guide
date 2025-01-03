@@ -176,6 +176,46 @@ function extractHeaders(dom, argv) {
   return headerElements;
 }
 
+function createListOfFigures(dom) {
+  let parent = dom.window.document.getElementsByClassName('list-of-figures')[0]; // first element
+  const collection = [...dom.window.document.getElementsByClassName('figure')];
+  if (parent && collection.length) {
+    collection.forEach(item => {
+      let listElement = dom.window.document.createElement('li');
+      listElement.className = "figure-entry-title";
+      let refElement = dom.window.document.createElement('a');
+      let id = item.id + '-caption';
+      refElement.href = '#' + id;
+      let spanElement = dom.window.document.createElement("span");
+      spanElement.className = "figure-entry-text"
+      spanElement.innerHTML = dom.window.document.getElementById(id).innerHTML;
+      refElement.appendChild(spanElement);
+      listElement.appendChild(refElement);
+      parent.appendChild(listElement);
+    });
+  }
+}
+
+function createListOfTables(dom) {
+  let parent = dom.window.document.getElementsByClassName('list-of-tables')[0]; // first element
+  const collection = [...dom.window.document.getElementsByClassName('table')];
+  if (parent && collection.length) {
+    collection.forEach(item => {
+      let listElement = dom.window.document.createElement('li');
+      listElement.className = "table-entry-title";
+      let refElement = dom.window.document.createElement('a');
+      let id = item.id + '-caption';
+      refElement.href = '#' + id;
+      let spanElement = dom.window.document.createElement("span");
+      spanElement.className = "table-entry-text"
+      spanElement.innerHTML = dom.window.document.getElementById(id).innerHTML;
+      refElement.appendChild(spanElement);
+      listElement.appendChild(refElement);
+      parent.appendChild(listElement);
+    });
+  }
+}
+
 // Merge source HTML files into a single file
 async function merge(argv) {
   // Don't merge files if --merged has not
@@ -226,6 +266,10 @@ async function merge(argv) {
         // that loads bundle.js, so it doesn't load multiple times.
         if (fileCounter === filePaths.length) {
           updateToC(tocEntries, mergedDom);
+
+          createListOfFigures(mergedDom);
+          createListOfTables(mergedDom);
+
           console.log('Writing merged HTML to ' + destination)
           fsPromises.writeFile(destination, mergedDom.serialize())
           resolve(true)

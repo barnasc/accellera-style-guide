@@ -3,7 +3,10 @@ $web-maths: true !default;
 
     // Math
 
-    math {}
+    // mathml equation requires extra spacing
+    math {
+        margin-bottom: $line-height-default!important;
+    }
 
     // Automatic fractions
     

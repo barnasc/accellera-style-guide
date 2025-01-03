@@ -20,16 +20,7 @@ h2 {
 }
 
 * + h2 {
-  margin-top: 2 * $line-height-default;
-}
-
-h3 {
-  margin: 0;
-  margin-bottom: $line-height-default;
-}
-
-* + h3 {
-  margin-top: 2 * $line-height-default;
+  margin-top: 1.5 * $line-height-default;
 }
 
 .content > h1:first-child,

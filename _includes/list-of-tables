@@ -1,0 +1,6 @@
+{% comment %}
+Extracted List of Tables will be added as part of HTML DOM processing.
+We only need to add the list-of-tables placeholder here
+{% endcomment %}
+
+<ol class="list-of-tables"></ol>

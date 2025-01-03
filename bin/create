@@ -1,0 +1,6 @@
+#!/bin/bash
+docker run \
+-v $PWD/books:/home/adf/books \
+-v $PWD/metadata:/home/adf/_data/works \
+-v $PWD/output:/home/adf/_output \
+adf:v0.7 /bin/bash -c "npm run eb -- output --format screen-pdf --book '$@'"

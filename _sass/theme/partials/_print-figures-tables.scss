@@ -40,3 +40,22 @@ th, td {
 th {
   text-align: center;
 }
+
+.table .table-body {
+  margin-bottom: $line-height-default;
+
+  .caption {
+    font-family: $font-text-secondary;
+    font-weight: bold;
+    font-size: $font-size-default;
+    text-align: center;
+  
+    .table-reference::after {
+      content: "—";
+    }
+  }
+
+  .table-images {
+    margin-bottom: 0;
+  }
+}

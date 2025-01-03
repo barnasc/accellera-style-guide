@@ -1,0 +1,6 @@
+{% comment %}
+Extracted List of Figures  will be added as part of HTML DOM processing.
+We only need to add the list-of-figures placeholder here
+{% endcomment %}
+
+<ol class="list-of-figures"></ol>

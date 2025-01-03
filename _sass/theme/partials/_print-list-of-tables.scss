@@ -1,0 +1,73 @@
+// list-of-tables
+
+.contents-page {
+  .content > .list-of-tables > .table-entry-title {
+    margin-top: $line-height-default;
+  }
+  .content > .list-of-tables > li {
+    margin: 0!important;
+  }
+  li {
+    a {
+      text-decoration: none!important;
+      color: inherit!important;
+      .table-entry-text {
+        display: inline;
+        max-width: 90%;
+      }
+      .table-reference::after {
+        content: '\2014'; // add emdash after reference
+      }
+    }
+    a::after { 
+      content: leader(".") " " target-counter(attr(href), page);
+    }
+    a.frontmatter-reference::after {
+      content: leader(".") " " target-counter(attr(href), page, $frontmatter-reference-style);
+    }
+    &.frontmatter-entry, &.frontmatter-reference {
+      a::after {
+        content: leader(".") " " target-counter(attr(href), page, $frontmatter-reference-style);
+      }
+    }
+  }
+}
+
+// PAGEDJS
+.contents-page[data-pdf-engine="pagedjs"] {
+  .content > .list-of-tables > .table-entry-title {
+    margin-top: $line-height-default;
+  }
+  
+  ol {
+    padding-left: 0;
+  }
+
+  li {
+    a {
+      display: grid;
+      grid-template-columns: 100%;
+
+      span.table-entry-text {
+        grid-column: 1 / 2;
+        grid-row: 1 / 2;
+        justify-self: start;
+        background-color: white;
+        z-index: 4;
+
+        &::after {
+          content: ' ';
+          padding-left: 0.5em;
+          background-color: white;
+        }
+      }
+    }
+    
+    a::after { 
+      content: '............................................................................................................................................................ ' target-counter(attr(href), page);
+      grid-column: 1 / 2;
+      grid-row: 1 / 2;
+      justify-self: end;
+    }
+  }
+}
