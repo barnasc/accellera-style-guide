@@ -1,4 +1,10 @@
 #!/bin/bash
+
+if [ "$#" -eq 0 ]; then
+    echo "Usage: $0 <book>"
+    exit 1
+fi
+
 docker run \
 -v $PWD/books:/home/adf/books \
 -v $PWD/metadata:/home/adf/_data/works \
