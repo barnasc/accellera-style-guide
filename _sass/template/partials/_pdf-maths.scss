@@ -8,16 +8,16 @@ $pdf-maths: true !default;
         margin-right: auto;
     }
 
-    // mathml equation requires extra spacing
-    math {
-        margin-bottom: $line-height-default!important;
-    }
-
     // Automatic fractions
 
     .fractions { 
     	font-variant: prince-opentype(frac);
     	font-style: inherit;
+    }
+
+    .equation-body {
+        margin-bottom: $line-height-default;
+        margin-left: 2 * $paragraph-indent;
     }
 
     // MathJax
