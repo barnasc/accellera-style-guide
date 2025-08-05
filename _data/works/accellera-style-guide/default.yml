@@ -1,6 +1,6 @@
 title: "Accellera Style Guide"
 subtitle: ""
-version: "version 0.5"
+version: "version 0.7"
 creator: "Accellera Systems Initiative" # E.g. the author
 contributor: "" # E.g. other contributors
 subject: "The Accellera Style Guide defines the recommended structure, formatting and style to develop and publish Accellera (Draft) Standards, User Guides and other standard-related documentation. This style guide serves as a reference for Accellera working groups in the technical editing process when drafting a standard-related document."
@@ -8,8 +8,8 @@ description: "The Accellera Style Guide defines the recommended structure, forma
 keywords: "html, kramdown, markdown, style manual"
 publisher: "Accellera Systems Initiative" # E.g. the publisher, imprint or brand name
 publisher-url: ""
-date: "2024-12-02" # YYYY-MM-DD e.g. publication date
-modified: "2024-12-02" # YYYY-MM-DD e.g. date of last revision
+date: "2025-01-02" # YYYY-MM-DD e.g. publication date
+modified: "2025-01-02" # YYYY-MM-DD e.g. date of last revision
 type: "User Guide" # e.g. Standard, User Guide, Whitepaper
 identifier: "" # e.g. ISBN or UUID
 source: "" # e.g. parent ISBN or ISTC
@@ -23,7 +23,7 @@ status: "Final" # status, e.g., Draft, Final, Review
 
 products: # Metadata for each product for this title (only use values that override parent metadata)
   screen-pdf:
-    date: "2024-12-02" # YYYY-MM-DD e.g. publication date or last revision
+    date: "2025-01-02" # YYYY-MM-DD e.g. publication date or last revision
     format: "Digital download" # e.g. Paperback, Digital download, Digital online
     identifier: "" # e.g. ISBN or UUID
     image: "cover.jpg"
