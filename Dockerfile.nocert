@@ -78,14 +78,6 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/*
 RUN wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb && \
   dpkg -i libssl1.1_1.1.0g-2ubuntu4_amd64.deb
 
-# Install PrinceXML for printing to PDF
-#RUN wget https://www.princexml.com/download/prince_11.4-1_ubuntu18.04_amd64.deb --no-check-certificate && \
-#  dpkg -i prince_11.4-1_ubuntu18.04_amd64.deb
-
-# Install pandoc for document conversion
-#RUN wget https://github.com/jgm/pandoc/releases/download/2.5/pandoc-2.5-1-amd64.deb --no-check-certificate && \
-#  dpkg -i pandoc-2.5-1-amd64.deb
-
 # Update npm
 RUN npm install -g npm@latest
 
@@ -95,22 +87,16 @@ RUN npm install --global gulp-cli
 # Install bundler and jekyll
 RUN gem install jekyll bundler
 
-# Install gems.
-COPY Gemfile .
-RUN bash -lc "bundle install"
-
-# Switch to the user account
+# Switch to the user directory
 RUN useradd -ms /bin/bash adf
-USER adf
 WORKDIR /home/adf
 
-# Set paths for Ruby gems
-RUN echo '# Define Ruby Gems path' >> ~/.bashrc
-RUN echo 'export GEM_HOME="$HOME/.rvm/gems/ruby-2.7.6"' >> ~/.bashrc
-RUN echo 'export PATH="$HOME/.rvm/gems/ruby-2.7.6:$PATH"' >> ~/.bashrc
-RUN bash -lc "source ~/.bashrc"
+# Install gems
+COPY Gemfile .
+RUN bundle install
 
 # Copy all flow elements to container
+USER adf
 COPY --chown=adf:adf . .
 
 # Install Accellera Documentation Flow

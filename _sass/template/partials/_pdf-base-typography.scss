@@ -47,7 +47,7 @@ $convert-images-to-color-profile: false !default;
         //page-break-after: avoid;
     }
     h3, h4, h5, h6 {
-        margin: 0 0 $line-height-default 0; // t r b l
+        margin: $line-height-default 0 $line-height-default 0; // t r b l
         //page-break-after: avoid;
     }
     p, ul, ol, dl {

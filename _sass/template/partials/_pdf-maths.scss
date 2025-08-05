@@ -15,6 +15,11 @@ $pdf-maths: true !default;
     	font-style: inherit;
     }
 
+    .equation-body {
+        margin-bottom: $line-height-default;
+        margin-left: 2 * $paragraph-indent;
+    }
+
     // MathJax
     // Only use these styles to position maths blocks, 
     // not to style the maths itself. For dire warnings, see

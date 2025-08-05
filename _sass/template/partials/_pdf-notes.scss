@@ -17,6 +17,14 @@ $pdf-notes: true !default;
         font-size: $font-size-default * $font-size-smaller;
     }
 
+    .table {
+        .footnote {
+          line-height: inherit;
+          // Ensure footnote refs in headings are small
+          font-size: $font-size-default * $font-size-smaller * 0.8;
+        }
+    }
+
     // Footnotes section
     .footnotes {
         margin: $line-height-default 0 0 0;
@@ -26,7 +34,7 @@ $pdf-notes: true !default;
             text-indent: 0;
         }
     }
-    
+
     // Hide the link back to the footnote reference from the footnote text.
     .reversefootnote {
         display: none;
@@ -36,7 +44,7 @@ $pdf-notes: true !default;
     .sidenote {
         @include sidenote();
     }
-    
+
     // Sidenotes that appear at the bottom of the page, aka footer notes.
     .bottom {
         float: bottom;
@@ -84,7 +92,7 @@ $pdf-notes: true !default;
         text-indent: 0;
 
         span {
-          margin-left: 0.5em;
+            margin-left: 0.5em;
         }
     }
 
@@ -102,58 +110,58 @@ $pdf-notes: true !default;
     .wrapper[data-page-footnotes="page"] {
         @page {
             counter-reset: page-footnote;
-        }    
+        }
     }
 
     // In the case where manual footnotes are specified individually,
     // reset footnote counter once per page to avoid unnecessarily
     // long strings of asterisks
     @page {
-      counter-reset: manual-footnote;
+        counter-reset: manual-footnote;
     }
-    
+
     // Specify the appearance of on-page footnotes
     // Default case is manual footnotes, counted with asterisks
     [data-pdf-engine="prince"] {
         .page-footnote {
             counter-increment: manual-footnote;
-            
+
             &::footnote-call {
                 content: counter(manual-footnote, asterisks);
             }
-    
+
             &::footnote-marker {
                 content: counter(manual-footnote, asterisks);
             }
         }
-    
+
         // Use the other counters for the other cases,
         // with default (decimal) counters
         .page-footnote.page-footnote-page {
             counter-increment: page-footnote;
-    
+
             &::footnote-call {
                 content: counter(page-footnote);
             }
-            
+
             &::footnote-marker {
                 content: counter(page-footnote);
             }
         }
-    
+
         .page-footnote.page-footnote-book {
             counter-increment: book-footnote;
-    
+
             &::footnote-call {
                 content: counter(book-footnote);
             }
-            
+
             &::footnote-marker {
                 content: counter(book-footnote);
             }
         }
     }
-    
+
     // formatting for general note
     .note {
         font-size: $font-size-default * 0.9;
