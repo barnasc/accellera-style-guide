@@ -31,6 +31,7 @@ $convert-images-to-color-profile: false !default;
         line-height: $line-height-default;
         font-weight: bold;
         margin: $line-height-default 0 0 0;
+        // Accellera disabled
         //page-break-after: avoid;
         //page-break-inside: avoid;
     }
@@ -95,6 +96,7 @@ $convert-images-to-color-profile: false !default;
 
     ul, ol {
         margin: 0 0 $line-height-default 0;
+        // Accellera setting
         page-break-before: avoid;
     }
     ol {
@@ -116,6 +118,7 @@ $convert-images-to-color-profile: false !default;
         margin-bottom: 0; // manages line space after sublists in lists
     }
     li {
+        // Accellera removed
         //page-break-inside: avoid;
         list-style-position: outside;
         margin-left: $paragraph-indent;
@@ -126,6 +129,7 @@ $convert-images-to-color-profile: false !default;
     }
     li:first-of-type {
         page-break-after: avoid;
+        // Accellera added
         page-break-inside: avoid;
     }
     li:last-of-type {

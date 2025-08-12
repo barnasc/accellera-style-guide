@@ -17,6 +17,7 @@ $pdf-notes: true !default;
         font-size: $font-size-default * $font-size-smaller;
     }
 
+    // Accellera addition
     .table {
         .footnote {
           line-height: inherit;
@@ -43,17 +44,21 @@ $pdf-notes: true !default;
     // Sidenotes
     .sidenote {
         @include sidenote();
-    }
 
-    // Sidenotes that appear at the bottom of the page, aka footer notes.
-    .bottom {
-        float: bottom;
-        max-width: 100%;
-        margin: ($line-height-default * 0.75) 0 0 0;
+        // Sidenotes that appear at the bottom of the page, aka footer notes.
+        &.bottom {
+            float: bottom;
+            max-width: none;
+            width: 100%;
+            margin: ($line-height-default * 0.75) 0 0 0;
+        }
     }
 
     // The page-footnotes area
     @page {
+        // Accellera deletion
+        //counter-reset: manual-footnote;
+
         @footnote {
             border-top: $rule-thickness solid $color-text-main;
             margin-top: $line-height-default / 2;
@@ -64,6 +69,14 @@ $pdf-notes: true !default;
 
     // True footnotes (we call them page-footnotes for clarity)
     // For styling see https://www.princexml.com/doc-prince/#footnote-calls
+
+    // Accellera deletion
+    // The numbers in front of footnote text
+    //*::footnote-marker {
+    //    float: left;
+    //    font-size: $font-size-default * $font-size-smaller;
+    //    width: 0;
+    //}
 
     // The page-footnote references in body text
     // Note that other <sup> styling is defined in

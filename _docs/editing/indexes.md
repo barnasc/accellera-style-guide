@@ -96,11 +96,11 @@ occupations \\ clergy \\ Nonconformist
 
 Concepts listed in an index are sometimes discussed in a book over long passages, rather than in one word-specific location. For instance, in a book on French literature, several pages might be dedicated to discussing the work of Albert Camus. The index might list 'Camus, Albert 25–28'.
 
-When you tag concepts in the book's text, and you want to reference a range like this, you need to note where the range begins and ends. Do this by adding a hyphen at the end or start of your tag's entry. You'd tag the start of the Camus section like this:
+When you tag concepts in the book's text, and you want to reference a range like this, you need to note where the range begins and ends. Do this by adding a tilde at the end or start of your tag's entry. You'd tag the start of the Camus section like this:
 
 ``` md
 <!--index:
-Camus, Albert-
+Camus, Albert~
 -->
 ```
 
@@ -108,15 +108,15 @@ And you'd tag the end of the discussion like this:
 
 ``` md
 <!--index:
--Camus, Albert
+~Camus, Albert
 -->
 ```
 
-To end a range for a nested entry, the hyphen goes at the start of the entire line, not the subentry term:
+To end a range for a nested entry, the tilde goes at the start of the entire line, not the subentry term:
 
 ``` md
 <!--index:
--cases \\ Scandal in Bohemia
+~cases \\ Scandal in Bohemia
 -->
 ```
 
@@ -137,17 +137,75 @@ Don't confuse the syntax of this list with that used for your tags. You do not i
 
 ``` md
 - Camus, Albert
+- de Beauvoir, Simone
 - existentialists
   - Camus, Albert
+  - de Beauvoir, Simone
 {:.reference-index}
 ```
 
+#### Cross references
+
+Indexes use two main kinds of cross references: 'see' and 'see also'.
+
+'See' references send the reader elsewhere for the relevant page references. 'See also' references tell the reader that, in addition to the page references here, there are potentially other useful page references under a different entry. For example:
+
+``` md
+- Eliot, George. *See* Evans, Mary Ann
+- essentialists
+  - *See also* essentialism
+- existentialists
+  - Camus, Albert
+  - de Beauvoir, Simone
+  - *See also* existentialism
+```
+
+Importantly, note that:
+
+- Since there is no page reference for a 'See' reference, the reference is on the same line as the entry.
+- The 'See also' reference is on its own line, since each entry may have its own page reference(s).
+
+Do **not** do this:
+
+```md
+- existentialists. *See also* existentialism
+  - Camus, Albert
+  - de Beauvoir, Simone
+```
+
+because not only does it break page references at `existentialists`, it will also break all subentries' page references. This is because, for the dynamic page references to work, the entire index entry must match its tag in the body text exactly. The first line above, `existentialists. *See also* existentialism` does not match the tag `<!-- index: existentialists -->`.
 
 ### Generating the index database
 
 Before the page numbers and links will work in your book, you need to generate the index's 'database' file.
 
-Use the output script and choose the 'refresh indexes' option for each output format you're publishing. The script will generate an 'index database' as a Javascript file. This is necessary for the system to populate your index list with links when you output your book. For instance, for print-PDF, this will create a file called `book-index-print-pdf.js`. In version control (e.g. Git), you should commit this generated file in the same way you do any book content.
+Use the output script and choose the 'refresh indexes' option for each output format you're publishing. E.g. this task creates the default `web`-format index database:
+
+```sh
+npm run eb -- index
+```
+
+Then create the database for print-PDF output:
+
+```sh
+npm run eb -- index -f print-pdf
+```
+
+then for screen-PDF output:
+
+```sh
+npm run eb -- index -f screen-pdf
+```
+
+then for EPUB output:
+
+```sh
+npm run eb -- index -f epub
+```
+
+This may seem repetitive, but each of these output formats generates slightly different HTML, or even content, and this means each one must build fully to create its format-specific database.
+
+The script will generate an 'index database' as a Javascript file for each format you run it for. This is necessary for the system to populate your index list with links when you output your book. For instance, for print-PDF, this will create a file called `book-index-print-pdf.js`. In version control (e.g. Git), you should commit this generated file in the same way you do any book content.
 
 And you should re-run the 'refresh indexes' option each time your indexing tags have changed.
 

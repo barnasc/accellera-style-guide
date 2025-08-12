@@ -21,6 +21,12 @@ $pdf-index: true !default;
 				margin: 0 0 0 ($paragraph-indent / 2);
 			}
 		}
+
+		h1, h2, h3, h4, h5, h6 {
+			font-size: inherit;
+			margin: $line-height-default 0 0 0;
+		}
+
 		a {
 			// content: target-counter(attr(href), page);
 
@@ -58,4 +64,18 @@ $pdf-index: true !default;
 		text-decoration: none;
 	}
 
+	.index-target {
+
+		// Don't break a page between an index target
+		// and the text that it targets.
+		break-after: avoid;
+	}
+
+	// Don't break between headings and their preceding index targets
+	h1, h2, h3, h4, h5, h6 {
+
+		.index-target + & {
+			break-before: avoid;
+		}
+	}
 }

@@ -52,14 +52,44 @@ $web-base-typography: true !default;
         }
     }
 
-    @if not $spaced-paras {
-        $floated-element-classes: sidenote;
-        @each $class in $floated-element-classes {
-            p + .#{$class} + p {
-                text-indent: $paragraph-indent;
+    // Indent paragraphs that are visually subsequent,
+    // but separated by floated elements in the DOM.
+    // We allow for up to three floated elements between
+    // paragraphs. After that, editors should use `.web-indent`
+    // as a page-refinment override.
 
-                &.first {
-                    text-indent: 0;
+    @if not $spaced-paras {
+        @if $floated-element-classes {
+            @each $class in $floated-element-classes {
+                p + .#{$class} + p {
+                    text-indent: $paragraph-indent;
+
+                    &.first,
+                            &.box {
+                        text-indent: 0;
+                    }
+                }
+
+                @each $second-sibling-class in $floated-element-classes {
+                    p + .#{$class} + .#{$second-sibling-class} + p {
+                        text-indent: $paragraph-indent;
+
+                        &.first,
+                            &.box {
+                            text-indent: 0;
+                        }
+                    }
+
+                    @each $third-sibling-class in $floated-element-classes {
+                        p + .#{$class} + .#{$second-sibling-class} + .#{$third-sibling-class} + p {
+                            text-indent: $paragraph-indent;
+
+                            &.first,
+                            &.box {
+                                text-indent: 0;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -224,7 +254,7 @@ $web-base-typography: true !default;
     // Also see -figures partial
 
     // Standalone images
-    // (Markdown default puts images on their own line 
+    // (Markdown default puts images on their own line
     // into paragraphs like this.)
     p img:only-child {
         margin: $line-height-default auto;

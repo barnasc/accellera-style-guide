@@ -1,4 +1,4 @@
-/* global Prince, ebSlugify, NodeFilter */
+/* global Prince, ebDecodeHtmlEntitiesPreservingTags, ebSlugify, marked, NodeFilter */
 
 // This script helps create dynamic book indexes.
 // It finds all HTML comments that start with
@@ -21,6 +21,8 @@
 // This script is not used for PDF and epub outputs.
 // PrinceXML does not 'see' HTML comments at all.
 // So for PrinceXML output, we prerender the HTML with gulp/cheerio.
+// The script is included in PDF outputs so that
+// Puppeteer can use it for indexing PDF outputs.
 // In epub readers, the links don't work from the index
 // because the targets would only exist when the target
 // page is rendered. Browsers handle this fine, but not ereaders.
@@ -57,7 +59,7 @@ function ebIndexProcessComments (comments) {
 
   // If there are no comments, note that in the
   // `data-index-targets` attribute.
-  if (comments.length < 1) {
+  if (comments.length < 1 || !comments) {
     document.body.setAttribute('data-index-targets', 'none')
   }
 
@@ -97,7 +99,7 @@ function ebIndexProcessComments (comments) {
       // https://stackoverflow.com/a/41183617/1781075
       // and remove any leading or trailing hyphens.
       const entriesByLevel = rawEntriesByLevel.map(function (str) {
-        return str.trim().replace(/^-+|-+$/, '')
+        return str.trim().replace(/^~+|~+$/, '')
       })
 
       // Check for starting or ending hyphens.
@@ -112,11 +114,11 @@ function ebIndexProcessComments (comments) {
       let from = false
       let to = false
 
-      if (line.substring(0, 1) === '-') {
+      if (line.substring(0, 1) === '~') {
         to = true
         line = line.substring(1)
       }
-      if (line.substring(line.length - 1) === '-') {
+      if (line.substring(line.length - 1) === '~') {
         from = true
         line = line.substring(0, line.length - 1)
       }
@@ -124,7 +126,10 @@ function ebIndexProcessComments (comments) {
       // Slugify the target text to use in an ID
       // and to check for duplicate instances later.
       // The second argument indicates that we are slugifying an index term.
-      const entrySlug = ebSlugify(line, true)
+      // Process the text as markdown, because we need
+      // HTML tag content included, as it is for listItemSlug.
+      const processedLine = ebDecodeHtmlEntitiesPreservingTags(marked.parseInline(line))
+      const entrySlug = ebSlugify(processedLine, true)
 
       // Add the slug to the array of entries,
       // where will we count occurrences of this entry.
@@ -352,9 +357,10 @@ function ebIndexGetComments () {
 function ebIndexInit () {
   'use strict'
 
-  // Don't run this if the targets are already loaded
-  // (e.g. by pre-processing)
-  if (document.querySelector('[data-index-targets]')) {
+  // Don't run this in Prince or if the targets
+  // are already loaded (e.g. by pre-processing)
+  if (document.querySelector('[data-index-targets]') ||
+      typeof Prince === 'object') {
     return
   }
 

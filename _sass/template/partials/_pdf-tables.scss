@@ -111,6 +111,11 @@ $pdf-tables: true !default;
 			margin: 0;
 			padding: 0;
 			text-align: left;
+			// Accellera deleted
+			// Indent nested lists in tables
+			//ul, ol {
+			//	margin-left: $paragraph-indent;
+			//}
 		}
 	}
 	.table-row-stub {
@@ -125,6 +130,7 @@ $pdf-tables: true !default;
 			font-style: normal;
 		}
 	}
+	// Accellera special styles
 	.table-no-padding {
 		padding: 0!important;
 		th, td {

@@ -68,7 +68,7 @@ See the [Javascript](../advanced/javascript.html) section for more detail.
 
 If you include SVG images *inline* in an epub file – that is, the `<svg>` markup itself is in the final HTML, not just linked in an `<img src="*.svg">` element, you need to indicate that the file includes an inline SVG. This is because for an epub to be valid, the `package.opf` file must flag when a file includes inline SVGs.
 
-In order to do this, you must add this to the file's YAML frontmatter:
+In order to do this, you must add this to the file's top-of-page YAML:
 
 ```yaml
 contains-svg: true
@@ -84,12 +84,6 @@ defaults:
     values:
       contains-svg: true
 ```
-
-## HTML transformations
-
-You may want to make universal changes to your epubs' HTML when epubs are generated. These are called transformations. The template already includes one simple transformation for accessibility purposes: the `epubAriaSidenotes` transformation gives all elements with the class `sidenote` the ARIA attribute `role="note"`.
-
-To add a transformation, add a file containing a single function to `_tools/gulp/transformations/epub`. For the structure of the function, copy one of the existing files there. For syntax, these functions use [Cheerio](https://cheerio.js.org/docs/api/classes/Cheerio#manipulation-methods).
 
 ## Troubleshooting
 

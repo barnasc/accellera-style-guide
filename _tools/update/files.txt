@@ -760,7 +760,6 @@ _sass/template/partials/_epub-toc.scss
 _sass/template/partials/_epub-verse.scss
 _sass/template/partials/_epub-video.scss
 _sass/template/partials/_epub-wrappers.scss
-_sass/template/partials/_pdf-abstract-page.scss
 _sass/template/partials/_pdf-base-typography.scss
 _sass/template/partials/_pdf-baseline-grid.scss
 _sass/template/partials/_pdf-bibliographies.scss

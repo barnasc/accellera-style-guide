@@ -7,8 +7,10 @@ layout: null
 {% include_relative polyfills.js %}
 {% include_relative utilities.js %}
 {% include_relative settings.js %}
+{% include_relative metadata.js %}
 {% include_relative locales.js %}
 {% include_relative mark-parents.js %}
+{% include_relative color-panels.js %}
 
 {% if site.data.settings.redact == true %}
     {% include_relative redact.js %}
@@ -30,6 +32,7 @@ layout: null
     {% include_relative show-hide.js %}
     {% include_relative copy-to-clipboard.js %}
     {% include_relative share.js %}
+    {% include_relative expandable-box.js %}
 
     {% if site.data.settings.web.svg.inject == true %}
         {% include_relative vendor/svg-inject.min.js %}
@@ -39,7 +42,12 @@ layout: null
     {% comment %} Load after SVG management {% endcomment %}
     {% include_relative lazyload.js %}
 
+    {% comment %} Markdown processor in JS, mostly for utilities {% endcomment %}
+    {% include_relative vendor/marked.min.js %}
+
 {% endif %}
+
+{% include_relative testing-images.js %}
 
 {% if site.output == "web" and site.build != "live" and site.data.settings.web.annotator.development == true %}
     {% include_relative annotation.js %}
@@ -88,8 +96,9 @@ have different behaviour for web or app. {% endcomment %}
     the relevant page cross-reference text as generated content.{% endcomment %}
     {% include_relative page-reference.js %}
 
-    {% comment %} This aligns elements to a baseline grid. {% endcomment %}
-    {% comment %}{% include_relative baseline-grid.js %}{% endcomment %}
+    {% comment %} This aligns elements to a baseline grid.
+    This is experimental, so it's commented out by default. {% endcomment %}
+    {% comment %} {% include_relative baseline-grid.js %} {% endcomment %}
 
 {% endif %}
 
@@ -114,7 +123,9 @@ have different behaviour for web or app. {% endcomment %}
 
     {% endunless %}
 
-{% comment %} Scripts for epub output. {% endcomment %}
+{% comment %} Scripts for epub output.
+Do not expect support in many readers. {% endcomment %}
 {% if site.output == "epub" %}
+    {% include_relative mcqs.js %}
     {% include_relative show-hide.js %}
 {% endif %}

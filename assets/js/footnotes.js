@@ -1,3 +1,5 @@
+// Accellera footnotes
+
 // Move footnote text to the bottoms of pages by moving them
 // from the end of the document (where kramdown gathers them)
 // to a container div beside their in-text references.

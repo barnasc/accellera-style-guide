@@ -1,4 +1,4 @@
-/* global ActiveXObject, XMLHttpRequest */
+/* global ActiveXObject, Node, XMLHttpRequest */
 
 // Utility functions
 
@@ -6,11 +6,12 @@
 function ebSlugify (string, indexTerm) {
   'use strict'
 
+  // updated slug for Accellera
   const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·,;'
   const b = 'aaaaaaaaaacccddeeeeeeeegghiiiiiilmnnnnooooooooprrsssssttuuuuuuuuuwxyyzzz---'
   const p = new RegExp(a.split('').join('|'), 'g')
 
-  if (indexTerm) {
+  if (string && indexTerm) {
     // For dynamic index terms, we want to take a different approach
     // to ensure unique ids
     return string.toString().toLowerCase()
@@ -26,22 +27,52 @@ function ebSlugify (string, indexTerm) {
       .replace(/[^\w-]+/g, '') // Remove all non-word characters
   }
 
-  return string.toString().toLowerCase()
-    .replace(/\s+/g, '-') // Replace spaces with -
-    .replace(p, function (c) {
-      return b.charAt(a.indexOf(c))
-    }) // Replace special characters
-    .replace(/\//g, '-') // Replace any / with - (in non-index strings)
-    .replace(/&/g, '-and-') // Replace & with 'and'
-    .replace(/[^\w-]+/g, '') // Remove all non-word characters
-    .replace(/--+/g, '-') // Replace multiple - with single -
-    .replace(/^-+/, '') // Trim - from start of text
-    .replace(/-+$/, '') // Trim - from end of text
+  if (string) {
+    return string.toString().toLowerCase()
+      .replace(/\s+/g, '-') // Replace spaces with -
+      .replace(p, function (c) {
+        return b.charAt(a.indexOf(c))
+      }) // Replace special characters
+      .replace(/\//g, '-') // Replace any / with - (in non-index strings)
+      .replace(/&/g, '-and-') // Replace & with 'and'
+      .replace(/[^\w-]+/g, '') // Remove all non-word characters
+      .replace(/--+/g, '-') // Replace multiple - with single -
+      .replace(/^-+/, '') // Trim - from start of text
+      .replace(/-+$/, '') // Trim - from end of text
+  } else {
+    // We must return a string, even empty, otherwise
+    // an undefined slug will cause errors elsewhere.
+    return ''
+  }
 }
 
-// Or get the language from a URL parameter
+// Decode HTML entities in an HTML string
+// without losing HTML tags. Useful for slugifying
+// HTML where the tags are important but we don't
+// want entities in the slug. Works in browser/Puppeteer.
+// This has a Cheerio equivalent in _tools/gulp/processors/indexes.js.
+function ebDecodeHtmlEntitiesPreservingTags (html) {
+  const div = document.createElement('div')
+  div.innerHTML = html
+
+  function decodeTextNodes (node) {
+    for (const child of node.childNodes) {
+      if (child.nodeType === Node.TEXT_NODE) {
+        const textarea = document.createElement('textarea')
+        textarea.innerHTML = child.nodeValue
+        child.nodeValue = textarea.value
+      } else if (child.nodeType === Node.ELEMENT_NODE) {
+        decodeTextNodes(child)
+      }
+    }
+  }
+
+  decodeTextNodes(div)
+  return div.innerHTML
+}
+
+// Get the value of a URL parameter
 // https://stackoverflow.com/a/901144/1781075
-// eslint-disable-next-line no-unused-vars
 function ebGetParameterByName (name, url) {
   'use strict'
   if (!url) {

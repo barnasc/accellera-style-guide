@@ -27,8 +27,12 @@ function ebLazyLoadImages () {
 
   // If IntersectionObserver is supported,
   // and lazyloading is on in settings.yml (loaded in settings.js),
+  // and the page is loaded over http so that SVG injection is possible
+  // (note that refreshing indexes scrapes page over the file: protocol,
+  // so we do not want lazyloading there),
   // create a new one that will use it on all the lazyImages.
-  if (Object.prototype.hasOwnProperty.call(window, 'IntersectionObserver')) {
+  if (Object.prototype.hasOwnProperty.call(window, 'IntersectionObserver') &&
+      settings.web.images.lazyload && window.location.protocol.includes('http')) {
     const lazyImageObserver = new IntersectionObserver(function
     (entries, lazyImageObserver) {
       entries.forEach(function (entry) {
@@ -62,6 +66,7 @@ function ebLazyLoadImages () {
     })
   } else {
     // If the browser doesn't support IntersectionObserver,
+    // or we're not lazy-loading in settings,
     // just change all data-src to src and data-srcset to srcset.
     lazyImages.forEach(function (lazyImage) {
       if (lazyImage.dataset.src) {
@@ -74,6 +79,17 @@ function ebLazyLoadImages () {
   }
 }
 
+// Check if the document is ready for lazyloading
+function ebReadyForLazyLoading () {
+  const readyForLazyLoading = document.body.getAttribute('data-index-targets') &&
+                            document.body.getAttribute('data-ids-assigned')
+  if (readyForLazyLoading) {
+    return true
+  } else {
+    return false
+  }
+}
+
 // Wait for data-index-targets to be loaded
 // and IDs to be assigned before lazyloading.
 // Otherwise intersectionObserver can miss images,
@@ -81,23 +97,22 @@ function ebLazyLoadImages () {
 function ebPrepareForLazyLoading () {
   'use strict'
 
-  const lazyImagesObserver = new MutationObserver(function (mutations) {
-    mutations.forEach(function (mutation) {
-      if (mutation.type === 'attributes') {
-        if (document.body.getAttribute('data-index-targets') &&
-                        document.body.getAttribute('data-ids-assigned')) {
+  if (ebReadyForLazyLoading()) {
+    ebLazyLoadImages()
+  } else {
+    const lazyImagesObserver = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        if (mutation.type === 'attributes' && ebReadyForLazyLoading()) {
           ebLazyLoadImages()
+          lazyImagesObserver.disconnect()
         }
-      }
+      })
     })
-  })
 
-  lazyImagesObserver.observe(document.body, {
-    attributes: true // listen for attribute changes
-  })
+    lazyImagesObserver.observe(document.body, {
+      attributes: true // listen for attribute changes
+    })
+  }
 }
 
-// Go when the document is loaded and if lazyLoad enabled
-if (settings.web.images.lazyload) {
-  ebPrepareForLazyLoading()
-}
+ebPrepareForLazyLoading()

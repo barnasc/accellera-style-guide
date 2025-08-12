@@ -7,10 +7,8 @@ $epub-code: true !default;
 
     code {
         font-family: $font-code;
-        font-size: $font-code-size;
         line-height: $line-height-default;
         white-space: pre-wrap;
-        padding: 0.1em 0.3em;
         border-radius: 0.2em;
     }
 

@@ -2,24 +2,61 @@
 
 // Import Node modules
 const cheerio = require('gulp-cheerio')
+const cheerioCore = require('cheerio')
 const gulp = require('gulp')
+const { decode } = require('entities')
+const { marked } = require('marked')
 
 // Local helpers
 const {
-  allTextPaths, paths, store, printpdfIndexTargets,
-  screenpdfIndexTargets, epubIndexTargets, appIndexTargets
+  printpdfIndexTargets, screenpdfIndexTargets,
+  epubIndexTargets, appIndexTargets
 } = require('../helpers/paths.js')
 const { ebSlugify } = require('../helpers/utilities.js')
 const { format } = require('../helpers/args.js')
+const htmlFilePaths = require('../../run/helpers/paths/htmlFilePaths.js')
+
+// A cheerio equivalent of ebDecodeHtmlEntitiesPreservingTags
+// from assets/js/utilities.js
+function decodeHtmlEntitiesPreservingTags (html) {
+  // Load as a fragment (not a full document)
+  const $ = cheerioCore.load(html, null, false)
+
+  function decodeTextNodes (el) {
+    $(el).contents().each((_, node) => {
+      if (node.type === 'text') {
+        node.data = decode(node.data)
+      } else if (node.type === 'tag') {
+        decodeTextNodes(node)
+      }
+    })
+  }
+
+  decodeTextNodes($.root())
+
+  return $.root().html()
+}
+
+// Check whether to use XML mode
+function isXMLMode () {
+  // Note: this needs to return a string,
+  // hence the quotes around 'true' and 'false'.
+  if (format === 'epub') {
+    return 'true'
+  } else {
+    return 'false'
+  }
+}
 
 // Turn HTML comments for book indexes into anchor tags.
 // This is a pre-processing alternative to assets/js/index-targets.js,
 // which dynamically adds index targets in web clients.
 // It duplicates much of what index-targets.js does. So, if you
 // update it, you may need to update index-targets.js as well.
-function renderIndexCommentsAsTargets (done) {
+async function renderIndexCommentsAsTargets (done) {
   'use strict'
-  gulp.src(allTextPaths(store), { base: './' })
+  const paths = await htmlFilePaths(null, null, { allFiles: true })
+  gulp.src(paths, { base: './', allowEmpty: true })
     .pipe(cheerio({
       run: function ($) {
         // Create an empty array to store entries.
@@ -39,8 +76,10 @@ function renderIndexCommentsAsTargets (done) {
             // or inline (e.g. inside a paragraph)?
             const startsWithLinebreak = /^\n/
             let position
-            if (startsWithLinebreak.test(comment.prev.data) &&
-                                startsWithLinebreak.test(comment.next.data)) {
+            if (comment.prev &&
+                comment.next &&
+                startsWithLinebreak.test(comment.prev.data) &&
+                startsWithLinebreak.test(comment.next.data)) {
               position = 'block'
             } else {
               position = 'inline'
@@ -75,29 +114,33 @@ function renderIndexCommentsAsTargets (done) {
 
               // Trim whitespace from each entry
               // https://stackoverflow.com/a/41183617/1781075
-              // and remove any leading or trailing hyphens.
+              // and remove any leading or trailing tildes.
               const entriesByLevel = rawEntriesByLevel.map(function (str) {
-                return str.trim().replace(/^-+|-+$/, '')
+                return str.trim().replace(/^~+|~+$/, '')
               })
 
-              // Check for starting or ending hyphens.
+              // Check for starting or ending tildes.
               // If one exists, flag the target as `from` or `to`,
-              // starting or ending a reference range. Then strip the hyphen.
+              // starting or ending a reference range. Then strip the tildes.
               // Note, JS's `startsWith` and `endsWith` are not supported
               // in PrinceXML, so we didn't use those in case using this in Prince.
               let rangeClass = 'index-target-specific'
 
-              if (line.substring(0, 1) === '-') {
+              if (line.substring(0, 1) === '~') {
                 rangeClass = 'index-target-to'
                 line = line.substring(1)
-              } else if (line.substring(line.length - 1) === '-') {
+              } else if (line.substring(line.length - 1) === '~') {
                 rangeClass = 'index-target-from'
                 line = line.substring(0, line.length - 1)
               }
 
               // Slugify the target text to use in an ID
               // and to check for duplicate instances later.
-              const entrySlug = ebSlugify(line)
+              // We process the text as markdown, because we need
+              // HTML tag content included, as it is for listItemSlug.
+              // But we remove HTML entities before slugifying.
+              const processedLine = decodeHtmlEntitiesPreservingTags(marked.parseInline(line))
+              const entrySlug = ebSlugify(processedLine, true)
 
               // Add the slug to the array of entries,
               // where will we count occurrences of this entry.
@@ -162,7 +205,8 @@ function renderIndexCommentsAsTargets (done) {
       },
       parserOptions: {
         // XML mode necessary for epub output
-        xmlMode: true
+        // and must be false for PDF output
+        xmlMode: isXMLMode()
       }
     }))
     .pipe(gulp.dest('./'))
@@ -176,9 +220,10 @@ function renderIndexCommentsAsTargets (done) {
 // This pre-processing alternative is necessary for offline formats.
 // It duplicates much of what index-lists.js does. So, if you
 // update it, you may need to update index-lists.js as well.
-function renderIndexListReferences (done) {
+async function renderIndexListReferences (done) {
   'use strict'
-  gulp.src(paths.text.src, { base: './' })
+  const paths = await htmlFilePaths(null, null, { allFiles: true })
+  gulp.src(paths, { base: './', allowEmpty: true })
     .pipe(cheerio({
       run: function ($) {
         // Add a link to an entry in a reference index
@@ -222,15 +267,19 @@ function renderIndexListReferences (done) {
           // If the list item has a first child that contains text
           // use that text; otherwise use the entire list item's text.
 
-          // Get the text value of an li without its li children
+          // Get the text value of an li without its children
+          // or any index links already added by this process.
           function getListItemText (li) {
             const listItemClone = li.clone()
-            listItemClone.find('li').remove()
+            listItemClone.find('ul').remove()
+            listItemClone.find('a').remove()
 
             // If page refs have already been added to the li,
             // we don't want those in the text. They appear after
             // a line break, so we regex everything from that \n.
-            const text = listItemClone.text().trim().replace(/\n.*/, '')
+            // We need the tag names of HTML, but not the symbols, in the slug.
+            // So we have to decode the HTML first to remove encoded HTML.
+            const text = decode(listItemClone.html())
             return text
           }
 
@@ -250,7 +299,7 @@ function renderIndexListReferences (done) {
 
           // Reconstruct the reference's text value from the tree
           // and save its slug.
-          const listItemSlug = ebSlugify(listItemTree.join(' \\ '))
+          const listItemSlug = ebSlugify(listItemTree.join(' \\ '), true)
 
           // Get the book title and translation language (if any)
           // for the HTML page we're processing.
@@ -381,7 +430,8 @@ function renderIndexListReferences (done) {
       },
       parserOptions: {
         // XML mode necessary for epub output
-        xmlMode: true
+        // and must be false for PDF output
+        xmlMode: isXMLMode()
       }
     }))
     .pipe(gulp.dest('./'))

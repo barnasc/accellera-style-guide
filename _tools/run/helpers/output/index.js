@@ -12,24 +12,25 @@ const {
   convertXHTMLFiles,
   convertXHTMLLinks,
   cordova,
+  epubHTMLTransformations,
   epubValidate,
   epubZip,
   epubZipRename,
-  htmlFilePaths,
   jekyll,
   mathjaxEnabled,
   openOutputFile,
-  pathExists,
+  pdfHTMLTransformations,
+  processContent,
   renderIndexComments,
   renderIndexLinks,
   renderMathjax,
-  renderNumbering,
-  runPagedJS,
-  runPrince,
-  epubHTMLTransformations
+  runPrince
 } = require('../helpers.js')
+const htmlFilePaths = require('../paths/htmlFilePaths.js')
+const pathExists = require('../paths/pathExists.js')
 const merge = require('../merge')
 
+// Accellera addition
 async function copyBooks(argv, from, to, removeDir=false) {
   await fs.emptyDir(process.cwd() + to + argv.book);
   // first copy source files in books to root folder
@@ -59,15 +60,17 @@ async function pdf (argv) {
 
   try {
     await fs.emptyDir(process.cwd() + '/_site')
-    await copyBooks(argv, '/books/','/');
-    await renderNumbering(argv)
+    await copyBooks(argv, '/books/','/'); // Accellera step
+    await renderNumbering(argv); // Accellera step
     await jekyll(argv)
+    await processContent(argv)
     await renderIndexComments(argv)
     await renderIndexLinks(argv)
     await merge(argv)
-    await copyBooks(argv, '/','/_output/update/', true);
-    await copyBooks(argv, '/_site/','/_output/html/');
+    await copyBooks(argv, '/','/_output/update/', true); // Accellera step
+    await copyBooks(argv, '/_site/','/_output/html/'); // Accellera step
     await renderMathjax(argv)
+    await pdfHTMLTransformations(argv)
     if (argv['pdf-engine'] === 'pagedjs') {
       await runPagedJS(argv)
     } else {
@@ -85,8 +88,9 @@ async function epub (argv) {
 
   try {
     await fs.emptyDir(process.cwd() + '/_site')
-    await renderNumbering(argv)
+    await renderNumbering(argv); // Accellera step
     await jekyll(argv)
+    await processContent(argv)
     await epubHTMLTransformations(argv)
     await renderIndexComments(argv)
     await renderIndexLinks(argv)
@@ -98,7 +102,8 @@ async function epub (argv) {
     if (argv.language) {
       htmlDestination = argv.book + '/' + argv.language
     }
-    await addToEpub(htmlFilePaths(argv, '.xhtml'), htmlDestination)
+    const epubFiles = await htmlFilePaths(argv, '.xhtml')
+    await addToEpub(epubFiles, htmlDestination)
 
     let imagesDestination = argv.book + '/images/epub'
     if (argv.language) {
@@ -176,7 +181,7 @@ async function app (argv) {
 
   try {
     await fs.emptyDir(process.cwd() + '/_site')
-    await renderNumbering(argv)
+    await renderNumbering(argv) // Accellera step
     await jekyll(argv)
     await fsPromises.mkdir(process.cwd() + '/_site/app/www')
     await assembleApp()
@@ -187,7 +192,7 @@ async function app (argv) {
 
       // Build the app
       if (argv['app-release']) {
-        await cordova(['build', argv['app-os']], '--release')
+        await cordova(['build', argv['app-os'], '--release'])
       } else {
         await cordova(['build', argv['app-os']])
       }

@@ -28,9 +28,4 @@ $epub-notes: true !default;
 
     // .bottom {} // Only used for print output, ignored for screen.
 
-    // formatting for general note
-    .note {
-        font-size: $font-size-default * 0.9;
-        line-height: $line-height-default * 0.9;
-    }
 }

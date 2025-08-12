@@ -15,11 +15,11 @@ const projectSettings = require('../helpers').projectSettings
 // Make IDs in HTML unique by prefixing them
 // with the slug of the filename, and updating
 // any links that point to them.
-function updateIDs(filename, dom, argv) {
+function updateIDs (filename, dom, argv) {
   return new Promise(function (resolve, reject) {
     try {
       // Prefix IDs with a no-spaces, no-fullstops filename
-      const prefix = 'file-' + filename.replace(/[.\s]/g, '-')
+      const prefix = filename.replace(/[.\s]/g, '-')
       const elementsWithIDs = dom.window.document.querySelectorAll('[id]')
 
       elementsWithIDs.forEach(function (el) {
@@ -34,78 +34,80 @@ function updateIDs(filename, dom, argv) {
       // Give the .content element an ID from the filename,
       // so that we can point links to this file to that ID instead.
       const contentElement = dom.window.document.querySelector('.content')
-      contentElement.id = prefix
+      if (contentElement) {
+        contentElement.id = prefix
+      }
 
       // Get all links
       const links = dom.window.document.querySelectorAll('a[href]')
 
       // Convert the Nodelist to an array for filtering
-      const linksArray = Array.from(links)
+      if (links) {
+        const linksArray = Array.from(links)
 
-      // Filter out the external links, if there are links
-      let internalLinks
-      if (linksArray.length > 0) {
-        internalLinks = linksArray.filter(function (link) {
-          let isInternal = true
-          if (link.href.startsWith('https://') ||
-            link.href.startsWith('mailto:') ||
-            link.href.startsWith('http://')) {
-            isInternal = false
-          }
-          return isInternal
-        })
-      }
-
-      if (internalLinks) {
-        internalLinks.forEach(function (link) {
-          let href = link.getAttribute('href')
-
-          // Initialise variables for the target filename and ID
-          let linkFilenameAsPrefix
-          let linkID
-
-          // If an href contains slashes, it includes a path,
-          // potentially to another book in this project.
-          // If it's in the same book, we can simply remove the path
-          // and only keep the filename.
-          // If it's to another book, we must leave the link as is,
-          // and set a flag that prevents us from changing it later.
-          // MB: In case the href contains a starting slash, we need to remove the empty array element
-          let hrefIsToThisBook = true
-          if (href.match(/\//)) {
-            const hrefAsArray = href.replace(/^\.\.\//, '').split('/').filter(i => i != '')
-            if (hrefAsArray[0] === argv.book) {
-              href = hrefAsArray.pop()
-            } else {
-              hrefIsToThisBook = false
+        // Filter out the external links, if there are links
+        let internalLinks
+        if (linksArray.length > 0) {
+          internalLinks = linksArray.filter(function (link) {
+            let isInternal = true
+            if (link.href.startsWith('https://') ||
+                link.href.startsWith('http://')) {
+              isInternal = false
             }
-          }
+            return isInternal
+          })
+        }
 
-          // If the href:
-          // - is internal to this book, and
-          // - contains text and #, it points to a file and an ID
-          // - starts with #, it points to an ID in this file
-          // - doesn't include #, it points to another file.
-          if (hrefIsToThisBook) {
-            if (href.match(/.+#/)) {
-              linkFilenameAsPrefix = 'file-' + href.split('#').shift()
-                .replace(/[.\s]/g, '-')
-              linkID = href.split('#').pop()
-            } else if (href.startsWith('#')) {
-              linkFilenameAsPrefix = prefix
-              linkID = href.split('#').pop()
-            } else {
-              linkFilenameAsPrefix = 'file-' + href.replace(/[.\s]/g, '-')
+        if (internalLinks) {
+          internalLinks.forEach(function (link) {
+            let href = link.getAttribute('href')
+
+            // Initialise variables for the target filename and ID
+            let linkFilenameAsPrefix
+            let linkID
+
+            // If an href contains slashes, it includes a path,
+            // potentially to another book in this project.
+            // If it's in the same book, we can simply remove the path
+            // and only keep the filename.
+            // If it's to another book, we must leave the link as is,
+            // and set a flag that prevents us from changing it later.
+            let hrefIsToThisBook = true
+            if (href.match(/\//)) {
+              const hrefAsArray = href.replace(/^\.\.\//, '').split('/')
+              if (hrefAsArray[0] === argv.book) {
+                href = hrefAsArray.pop()
+              } else {
+                hrefIsToThisBook = false
+              }
             }
 
-            // Change the link to an internal link that uses
-            // the new ID prefix plus the linkID, if any.
-            link.href = '#' + linkFilenameAsPrefix
-            if (linkID) {
-              link.href = '#' + [linkFilenameAsPrefix, linkID].join('-')
+            // If the href:
+            // - is internal to this book, and
+            // - contains text and #, it points to a file and an ID
+            // - starts with #, it points to an ID in this file
+            // - doesn't include #, it points to another file.
+            if (hrefIsToThisBook) {
+              if (href.match(/.+#/)) {
+                linkFilenameAsPrefix = href.split('#').shift()
+                  .replace(/[.\s]/g, '-')
+                linkID = href.split('#').pop()
+              } else if (href.startsWith('#')) {
+                linkFilenameAsPrefix = prefix
+                linkID = href.split('#').pop()
+              } else {
+                linkFilenameAsPrefix = href.replace(/[.\s]/g, '-')
+              }
+
+              // Change the link to an internal link that uses
+              // the new ID prefix plus the linkID, if any.
+              link.href = '#' + linkFilenameAsPrefix
+              if (linkID) {
+                link.href = '#' + [linkFilenameAsPrefix, linkID].join('-')
+              }
             }
-          }
-        })
+          })
+        }
       }
 
       resolve(dom)
@@ -224,15 +226,22 @@ async function merge(argv) {
     return
   }
 
-  console.log('Merging HTML files...')
+  console.log('Merging HTML files ...')
+  const filePaths = await htmlFilePaths(argv)
 
   return new Promise(function (resolve, reject) {
     try {
-      const filePaths = htmlFilePaths(argv)
       let fileCounter = 1
       let mergedDom
       let tocEntries = [];
-      const destination = fsPath.dirname(filePaths[0]) + '/merged.html'
+      let destination
+      if (argv.language) {
+        destination = fsPath.normalize(process.cwd() +
+          '/_site/' + argv.book + '/' + argv.language + '/merged.html')
+      } else {
+        destination = fsPath.normalize(process.cwd() +
+          '/_site/' + argv.book + '/merged.html')
+      }
 
       filePaths.forEach(async function (filePath) {
         // Parse the HTML
@@ -276,7 +285,9 @@ async function merge(argv) {
         } else {
           const bundleScriptTag = mergedDom.window.document
             .querySelector('[data-script-name="bundle"]')
-          bundleScriptTag.remove()
+          if (bundleScriptTag) {
+            bundleScriptTag.remove()
+          }
         }
 
         fileCounter += 1

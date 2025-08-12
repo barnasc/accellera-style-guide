@@ -993,7 +993,7 @@ function ebBookmarksToggleModal (modal) {
 // Open the modal when the bookmarks button is clicked
 function ebBookmarksOpenOnClick () {
   'use strict'
-  const button = document.querySelector('.bookmarks > .bookmark-icon')
+  const button = document.querySelector('.bookmarks button .bookmark-icon')
   if (button !== null) {
     button.addEventListener('click', function () {
       ebBookmarksToggleModal()
@@ -1185,29 +1185,41 @@ function ebBookmarksInit () {
   }
 }
 
+// A check if the document is ready for bookmarks
+function ebReadyForBookmarks () {
+  const readyForBookmarks = document.body.getAttribute('data-ids-assigned') &&
+                            document.body.getAttribute('data-fingerprints-assigned')
+  if (readyForBookmarks) {
+    return true
+  } else {
+    return false
+  }
+}
+
 // Wait for IDs and fingerprints to be loaded
 // and IDs to be assigned
 // before applying the accordion.
 function ebPrepareForBookmarks () {
   'use strict'
 
-  const bookmarksObserver = new MutationObserver(function (mutations) {
-    let readyForBookmarks = false
-    mutations.forEach(function (mutation) {
-      if (mutation.type === 'attributes' && readyForBookmarks === false) {
-        if (document.body.getAttribute('data-ids-assigned') &&
-                        document.body.getAttribute('data-fingerprints-assigned')) {
-          readyForBookmarks = true
+  // If the doc is ready for bookmarks, go for it …
+  //  … otherwise, watch for when it is ready.
+  if (ebReadyForBookmarks()) {
+    ebBookmarksInit()
+  } else {
+    const bookmarksObserver = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        if (mutation.type === 'attributes' && ebReadyForBookmarks()) {
           ebBookmarksInit()
           bookmarksObserver.disconnect()
         }
-      }
+      })
     })
-  })
 
-  bookmarksObserver.observe(document.body, {
-    attributes: true // listen for attribute changes
-  })
+    bookmarksObserver.observe(document.body, {
+      attributes: true // listen for attribute changes
+    })
+  }
 }
 
 if (settings.web.bookmarks.enabled) {

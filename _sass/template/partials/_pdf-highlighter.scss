@@ -3,11 +3,12 @@ $pdf-highlighter: true !default;
 
     // Highlighter
 
-        .highlighter,
+    .highlighter,
     a[href="highlighter"] {
         background-color: yellow;
     }
 
+    // Accellera added
     // from https://github.com/jwarby/jekyll-pygments-themes
     // github.css
 

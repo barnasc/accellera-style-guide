@@ -1,7 +1,7 @@
 {% comment %} Metadata for a given work.
-Pass to this include the relevant work as work="",
-where work is the book or book/language folder
-in _data/works. {% endcomment %}
+Pass to this include the relevant work as work=workobject,
+where workobject is the data object for the book or book/language
+folder in _data/works. I.e. it is not a string. {% endcomment %}
 
 {% comment %} Get the work we're fetching metadata for,
 and set the default to the 'book' folder. {% endcomment %}
@@ -29,6 +29,13 @@ we fall back to the value in the work's default.yml.
     {% capture status %}{{ work[work-variant].status }}{% endcapture %}
 {% elsif work.default.status and work[work-variant].status == "Draft" %}
     {% capture status %}{{ work.default.status }}{% endcapture %}
+
+{% comment %} We assume a work is published unless `published` is false. {% endcomment %}
+{% assign published = true %}
+{% if work[work-variant].published == false %}
+    {% assign published = false %}
+{% elsif work.default.published == false %}
+    {% assign published = false %}
 {% endif %}
 
 {% if work[work-variant].title and work[work-variant].title != "" %}
@@ -329,6 +336,11 @@ we fall back to the value in the work's default.yml.
 {% elsif work.default.products.web.toc and work.default.products.web.toc != "" %}
 
     {% assign web-toc = work.default.products.web.toc %}
+
+{% else %}
+
+    {% assign web-toc = work.default.products.web.nav %}
+
 {% endif %}
 
 {% comment %} Epub metadata {% endcomment %}
@@ -363,6 +375,12 @@ we fall back to the value in the work's default.yml.
     {% capture epub-image %}{{ image }}{% endcapture %}
 {% endif %}
 
+{% if work[work-variant].products.epub.accessibility and work[work-variant].products.epub.accessibility != "" %}
+    {% assign epub-accessibility  = work[work-variant].products.epub.accessibility %}
+{% elsif work.default.products.epub.accessibility and work.default.products.epub.accessibility != "" %}
+    {% assign epub-accessibility = work.default.products.epub.accessibility %}
+{% endif %}
+
 {% if work[work-variant].products.epub.files and work[work-variant].products.epub.files != "" %}
     {% assign epub-file-list = work[work-variant].products.epub.files %}
 {% elsif work.default.products.epub.files and work.default.products.epub.files != "" %}
@@ -388,7 +406,9 @@ we fall back to the value in the work's default.yml.
 {% elsif work.default.products.epub.contents-page and work.default.products.epub.contents-page != "" %}
     {% capture epub-contents-page %}{{ work.default.products.epub.contents-page }}{% endcapture %}
 {% else %}
-    {% capture epub-contents-page %}{{ default-start-page }}{% endcapture %}
+    {% comment %} The epub-contents-page is important for epub validity as the `nav`
+    in package.opf. So if it is not set here, it must not fall back to anything that
+    might not include a valid nav element. {% endcomment %}
 {% endif %}
 
 {% if work[work-variant].products.epub.language and work[work-variant].products.epub.language != "" %}

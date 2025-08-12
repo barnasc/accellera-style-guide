@@ -1,12 +1,9 @@
 $pdf-margin-box-content: true !default;
 @if $pdf-margin-box-content {
 
-  // This partial sets page header and footer content.
-  // It sets separate content for .frontmatter and .chapter pages.
-
   // Assign a string to the .wrapper data-title attribute.
-  // In markdown, this is set with header: in a file's YAML frontmatter,
-  // and falls back to the page title.
+  // In markdown, this is set with `header:` in a file's
+  // top-of-page YAML, and falls back to the page title.
 
   .wrapper {
     string-set:
@@ -26,7 +23,7 @@ $pdf-margin-box-content: true !default;
   //
   // Note string-set lets us define multiple values, which can be used as fallbacks.
   // Like font-family settings, later strings are fallbacks for earlier strings.
-  h1 { 
+  h1 {
     string-set: 
       h1-text content(),
       h2-text content(),

@@ -1,15 +1,15 @@
 # Set site.output == "epub"
 output: "epub"
+
 # Set site.image-set == "images/epub"
 image-set: "images/epub"
-# Turn off documentation and activate epub collection
+
+# Only the `epub` collection should render.
+# See _config.yml for notes on collections.
 collections:
-  docs:
-    output: false
-  api:
-    output: false
   epub:
     output: true
+
 exclude:
   # The usual excludes from _config.yml
   - run.js
@@ -30,6 +30,7 @@ exclude:
 
   # Included as-is in other files, no need to process
   - /assets/js/annotation.js
+  - /assets/js/baseline-grid.js
   - /assets/js/polyfills.js
   - /assets/js/utilities.js
   - /assets/js/settings.js
@@ -60,9 +61,17 @@ exclude:
   - /assets/js/page-reference.js
   - /assets/js/bookmarks.js
 
-  # Exclude files we don't need for epub
+  # Collections that must not be processed
+  # for this output format
   - _api
+  - _app
+  - _docs
+
+  # Exclude files we don't need for epub
   - deploy.sh
+  - fr
+  - netlify.toml
+  - robots.txt
   - sitemap.xml
   - test.sh
   - /assets/fonts
@@ -111,14 +120,3 @@ media-types:
   txt: "text/plain"
   js: "application/javascript"
   unknown: "application/octet-stream"
-
-# Since some books in this project might not use MathJax,
-# we disable it by default in epub output, and
-# activate it manually on output from the output script,
-# which will override this setting.
-# (If we don't disable MathJax here, and it is enabled
-# in _config.yml, Jekyll will list the MathJax files
-# in the OPF manifest of all epubs, even if they don't need
-# MathJax, but the output script will not actually copy
-# the MathJax files into the epub package.)
-mathjax-enabled: false

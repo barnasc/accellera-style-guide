@@ -19,11 +19,32 @@ Then get the total number of images in the array.
 {% comment %} Do the same for alt text,
 since each image has its own. They should be
 separated with |s. {% endcomment %}
-{% assign alt-text-array-raw = include.alt-text | split: "|" %}
+
+{% comment %} First, allow 'alt' as an alias of 'alt-text',
+if used in the figure include's arguments. {% endcomment %}
+{% if include.alt %}
+    {% assign alt-text = include.alt %}
+{% endif %}
+{% if include.alt-text %}
+    {% assign alt-text = include.alt-text %}
+{% endif %}
+
+{% assign alt-text-array-raw = alt-text | split: "|" %}
 {% assign alt-text-array = "" | split: "" %}
 {% for alt-text in alt-text-array-raw %}
     {% capture alt-text-array-entry %}{{ alt-text | strip }}{% endcapture %}
     {% assign alt-text-array = alt-text-array | push: alt-text-array-entry %}
+{% endfor %}
+
+{% comment %} Do the same for title text,
+since each image has its own. They should be
+separated with |s. {% endcomment %}
+
+{% assign title-array-raw = include.title | split: "|" %}
+{% assign title-array = "" | split: "" %}
+{% for title-raw-entry in title-array-raw %}
+    {% capture title-array-entry %}{{ title-raw-entry | strip }}{% endcapture %}
+    {% assign title-array = title-array | push: title-array-entry %}
 {% endfor %}
 
 {% comment %} Allow tag to override default images location,
@@ -44,6 +65,38 @@ This allows for figures with IDs but without visible references. {% endcomment %
         {% break %}
     {% endif %}
 {% endfor %}
+
+{% comment %} If the reference is empty, set it to the first image name. {% endcomment %}
+{% if figure-reference == "" %}
+    {% capture figure-reference %}{{ figure-images[0] | slugify }}{% endcapture %}
+{% endif %}
+
+{% comment %} If the reference is the same as the image name, hide it. {% endcomment %}
+{% if figure-reference == figure-images[0] %}
+    {% assign figure-reference-hidden = true %}
+{% endif %}
+
+{% comment %} If there are no images (e.g. a table),
+and no include.reference, the figure reference will be empty.
+In that case, slugify the first hundred characters
+of the include.html or include.markdown for the reference,
+to be used in the ID, and hide it. {% endcomment %}
+{% if figure-images.size == 0 and figure-reference == "" %}
+    {% assign figure-reference-hidden = true %}
+{% endif %}
+
+{% comment %} Define the figure's ID. {% endcomment %}
+{% if include.id and include.id != "" %}
+    {% capture figure-id %}{{ include.id }}{% endcapture %}
+{% elsif figure-reference and figure-reference != "" %}
+    {% capture figure-id %}{{ figure-reference | slugify }}{% endcapture %}
+{% else %}
+    {% if include.html and include.html != "" %}
+        {% capture figure-id %}{{ include.html | markdownify | strip_html | strip | truncate: 100, "" | slugify }}{% endcapture %}
+    {% elsif include.markdown and include.markdown != "" %}
+        {% capture figure-id %}{{ include.markdown | markdownify | strip_html | strip | truncate: 100, "" | slugify }}{% endcapture %}
+    {% endif %}
+{% endif %}
 
 {% comment %}
 Then create our figure, using multiple images if necessary.
