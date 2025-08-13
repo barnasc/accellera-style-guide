@@ -29,6 +29,7 @@ we fall back to the value in the work's default.yml.
     {% capture status %}{{ work[work-variant].status }}{% endcapture %}
 {% elsif work.default.status and work[work-variant].status == "Draft" %}
     {% capture status %}{{ work.default.status }}{% endcapture %}
+{% endif %}
 
 {% comment %} We assume a work is published unless `published` is false. {% endcomment %}
 {% assign published = true %}

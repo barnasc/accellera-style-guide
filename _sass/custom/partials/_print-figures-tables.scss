@@ -1,0 +1,61 @@
+// FIGURES
+
+.figure .figure-body {
+  margin-bottom: 1.5 * $line-height-default;
+
+  .caption {
+    font-family: $font-text-secondary;
+    font-weight: bold;
+    font-size: $font-size-default;
+    text-align: center;
+  
+    .figure-reference::after {
+      content: "—";
+    }
+  }
+
+  .figure-images {
+    margin-bottom: 0;
+  }
+}
+
+// TABLES
+
+table {
+  font-size: $font-size-default;
+  margin-top: $line-height-default / 2;
+  font-family: $font-text-main;
+  border: 0.5pt solid $black;
+}
+
+th, td {
+  border: 0.5pt solid $black;
+  
+  &.vertical-middle {
+    vertical-align: middle;
+  }
+
+}
+
+th {
+  text-align: center;
+}
+
+.table .table-body {
+  margin-bottom: $line-height-default;
+
+  .caption {
+    font-family: $font-text-secondary;
+    font-weight: bold;
+    font-size: $font-size-default;
+    text-align: center;
+  
+    .table-reference::after {
+      content: "—";
+    }
+  }
+
+  .table-images {
+    margin-bottom: 0;
+  }
+}

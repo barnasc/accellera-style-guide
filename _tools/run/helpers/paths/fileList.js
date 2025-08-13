@@ -59,7 +59,7 @@ function fileList (argv, book, language) {
   }
 
   let files = []
-
+ 
   // If no language is specified, we can load
   // the files list for the default work.
   if (!language) {

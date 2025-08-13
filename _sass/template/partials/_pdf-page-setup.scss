@@ -12,8 +12,7 @@ $pdf-page-setup: true !default;
 		margin-right: $margin-inside;
 		padding: 0;
 		marks: $crop-marks;
-		bleed: $bleed;
-		prince-bleed: $bleed;
+		prince-bleed: $bleed-area;
 		prince-trim: $trim;
 		prince-pdf-page-colorspace: $colorspace;
 	}

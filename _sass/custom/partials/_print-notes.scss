@@ -1,0 +1,27 @@
+// Footnotes
+
+// The page-footnotes area
+@page {
+    @footnote {
+        border-clip: 0.25 * $page-width;
+    }
+}
+
+
+.pagedjs_footnote_inner_content > :first-child {
+  // border-top: $rule-thickness solid black;
+}
+
+// Avoid breaking TOC counter in PagedJS
+@page {
+  counter-reset: none;
+}
+
+.wrapper {
+  counter-reset: manual-footnote;
+}
+
+
+*[data-footnote-marker]::marker {
+  content: counter(footnote-marker);
+}

@@ -1,0 +1,23 @@
+// HEADERS AND FOOTERS
+
+@page {
+  @top-center {
+    content: $verso-top;
+    font-family: $font-text-secondary;
+    font-size: $footer-font-size;
+    white-space: pre-wrap;
+    text-transform: none !important;
+    line-height: $line-height-default !important;
+  }
+}
+
+@page {
+  @bottom-center {
+    content: $verso-bottom;
+    font-family: $font-text-secondary;
+    font-size: $footer-font-size;
+    white-space: pre-wrap;
+    text-transform: none !important;
+    line-height: $line-height-default !important;
+  }
+}

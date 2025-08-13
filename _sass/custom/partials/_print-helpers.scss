@@ -1,0 +1,24 @@
+@for $i from 1 through 5 {
+  $add-space: $i * 1.5 * $paragraph-indent;
+  .indent-#{$i} {
+    margin-left: $add-space;
+  }
+}
+
+.no-space-below {
+  margin-top: 0!important;
+  pre {
+    margin: 0!important; // for the code blocks
+  }
+}
+
+.no-space-above {
+  margin-bottom: 0!important;
+  pre {
+    margin: 0!important; // for the code blocks
+  }
+}
+
+.space-above {
+  margin-top: $line-height-default!important;
+}

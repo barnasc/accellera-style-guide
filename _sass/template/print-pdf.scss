@@ -160,6 +160,8 @@ $font-display-main: "Source Sans Pro", prince-no-fallback !default;
 $font-display-secondary: "Crimson Pro", prince-no-fallback !default;
 $font-code: "Ubuntu Mono", prince-no-fallback !default;
 
+$code-background-color: #f4f4f4;
+
 // Finally, we set variables related to text flow.
 $font-size-default: 11pt !default;
 $line-height-default: 15pt !default; // Set in points. For consistent baselines, all other line heights and vertical spaces are based on this.
@@ -226,7 +228,7 @@ $start-depth: $line-height-default * 15 !default;
 
 // Style of page numbers on frontmatter pages
 // Remember to tag links to front matter pages in your TOC with {:.frontmatter-reference}
-//  $frontmatter-reference-style: lower-roman !default; // lower-roman, decimal, see http://www.princexml.com/doc/gen-content/#idp54010640
+$frontmatter-reference-style: lower-roman !default; // lower-roman, decimal, see http://www.princexml.com/doc/gen-content/#idp54010640
 
 // Title page
 $title-page-logo-width: $paragraph-indent * 3 !default;

@@ -1,5 +1,50 @@
-// Uncomment this line to see a new accent colour
-// $color-accent: $example-blue !default;
+$pdf-sidebar: false;
 
-// Import a pre-designed base.
-@import "base/pdf-variables";
+$font-text-main: 'Times New Roman', Times, serif;
+$font-text-secondary: Arial, Helvetica, sans-serif;
+$font-display-main: Arial, Helvetica, sans-serif;
+$font-display-secondary: 'Times New Roman', Times, serif;
+
+$font-size-default: 10pt !default;
+$line-height-default: 12pt !default; // Set in points. For consistent baselines, all other line heights and vertical spaces are based on this.
+
+// First, we set several variables related to overall page setup.
+$page-width: 215.9mm !default;
+$page-height: 279.4mm !default;
+$margin-top: 72pt !default; // set in points to align with baseline grid
+$margin-bottom: 60pt !default;
+$margin-outside: 32mm !default;
+$margin-inside: 32mm !default;
+
+// Should chapters start on a right-hand page (recto) or on any page?
+$start-on: page !default;
+
+// Do you want space between paragraphs, rather than a text-indent? true or false
+$spaced-paras: true !default;
+
+// Show headers and footers on all pages
+// Set to blank or show.
+$first-page-margin-boxes: show;
+
+$verso-top: string(book-title);
+$recto-top: string(book-title);
+
+//No header for frontmatter pages
+$verso-top-frontmatter: normal;
+$recto-top-frontmatter: normal;
+
+// "\A" is a newline
+$verso-bottom: counter(page) "\A" string(book-copyright);
+$recto-bottom: counter(page) "\A" string(book-copyright);
+$verso-bottom-frontmatter: counter(page) "\A" string(book-copyright);
+$recto-bottom-frontmatter: counter(page) "\A" string(book-copyright);
+
+$footer-space-from-bottom: $margin-bottom / 4 !default;
+$footer-space-from-text: $line-height-default / 2 !default;
+
+$header-letter-spacing: 0 !default;
+$footer-letter-spacing: 0 !default;
+$header-text-align: center;
+$footer-text-align: center;
+
+$code-background-color: #f4f4f4;

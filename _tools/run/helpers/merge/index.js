@@ -9,6 +9,7 @@ const fsPromises = require('fs/promises')
 
 // Local helpers
 const htmlFilePaths = require('../paths/htmlFilePaths.js')
+const projectSettings = require('../settings/projectSettings.js')
 
 // Make IDs in HTML unique by prefixing them
 // with the slug of the filename, and updating

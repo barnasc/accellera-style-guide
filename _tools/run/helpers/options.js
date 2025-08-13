@@ -74,7 +74,7 @@ const options = {
   },
   cors: {
     description: 'Enable CORS when serving with Jekyll',
-    alias: 's',
+    alias: 'q',
     default: false,
     defaultDescription: 'false',
     type: 'boolean'
@@ -136,7 +136,7 @@ const options = {
     description: 'Depth of section (re)numbering in the book',
     alias: 's',
     default: -1,
-    defaultDescription: '0',
+    defaultDescription: '-1',
     type: 'number'
   },
   merged: {

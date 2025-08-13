@@ -1,0 +1,52 @@
+// TYPOGRAPHY
+
+.title {
+  font-family: $font-display-main;
+  font-size: 2.3 * $font-size-default;
+  font-weight: bold;
+  line-height: 1.2em;
+  text-align: center;
+}
+
+h1 {
+  font-size: 1.2 * $font-size-default;
+  line-height: 1.2em;
+  text-align: left;
+}
+
+h2 {
+  font-size: 1.1 * $font-size-default;
+  text-align: left;
+}
+
+:not(.toc-entry-title) > a[href]:not(.footnote, .page-footnote) {
+  color: blue;
+  text-decoration: underline;
+}
+
+.annex h1 strong {
+  font-weight: normal;
+
+  &:before {
+    content: '\a';
+    white-space: pre;
+    line-height: 1.2em;
+  }
+  &:after {
+    content: '\a';
+    white-space: pre;
+    line-height: 2.4em;
+  }
+}
+
+.policy {
+  font-style: italic;
+  line-height: 1.5 * $line-height-default;
+}
+
+// PAGEDJS
+[data-pdf-engine="pagedjs"] {
+  code {
+    line-height: $line-height-default;
+  }
+}

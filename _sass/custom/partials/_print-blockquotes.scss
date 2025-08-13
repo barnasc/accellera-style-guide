@@ -1,0 +1,14 @@
+// BLOCKQUOTES
+
+blockquote {
+  padding: 0;
+  padding-left: 3 * $paragraph-indent;
+
+  p {
+    margin-bottom: 0.5 * $line-height-default;
+  }
+}
+
+blockquote p:last-of-type {
+  margin-bottom: 0;
+}

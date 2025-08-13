@@ -1,2 +1,16 @@
-// Import a pre-designed base.
-@import "base/pdf-rules";
+@import "theme/partials/pagedjs-interface";
+@import "theme/partials/print-page-breaks";
+@import "theme/partials/print-blockquotes";
+@import "theme/partials/print-boxes";
+@import "theme/partials/print-figures-tables";
+@import "theme/partials/print-headers-footers";
+@import "theme/partials/print-lists";
+@import "theme/partials/print-margins";
+@import "theme/partials/print-maths";
+@import "theme/partials/print-notes";
+@import "theme/partials/print-pdf-view";
+@import "theme/partials/print-toc";
+@import "theme/partials/print-list-of-figures";
+@import "theme/partials/print-list-of-tables";
+@import "theme/partials/print-typography";
+@import "theme/partials/print-helpers";

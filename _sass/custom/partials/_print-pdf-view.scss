@@ -1,0 +1,15 @@
+// Style appearance of PDF in viewer
+
+@prince-pdf {
+  // Default view is single page spread
+  prince-pdf-page-layout: single-page;
+}
+
+h4, h5, h6 {
+  // Enable this to Hide level 4, 5, 6 bookmarks in PDF viewer sidebar
+  // prince-bookmark-level: none 
+}
+
+.no-bookmark {
+  prince-bookmark-level: none
+}

@@ -13,7 +13,8 @@
 // For that reason the method names have been renamed
 
 function moveEndnotesToFootnotes(item, counter) {
-  let endnoteReferences = document.querySelectorAll('[href*="' + item.id + '"]');
+  let refs = document.querySelectorAll('.footnote');
+  let endnoteReferences = Array.from(refs).filter( el => el.hash == ('#' + item.id))
   for (let i = 0; i < endnoteReferences.length; i++) {
     let reference = endnoteReferences[i];
     let endnoteReferenceID = reference.hash.replace('#', '');
@@ -23,15 +24,18 @@ function moveEndnotesToFootnotes(item, counter) {
     let parentTableFootnotes = footnoteInTableWrapper ? document.getElementById(footnoteInTableWrapper.id + '-footnotes') : null;
     // footnotes in tables should be placed directly under the table
     if (footnoteInTableWrapper && parentTableFootnotes ) {
-      let listItem = parentTableFootnotes.querySelector('#' + endnoteReferenceID.replace(':', '-'));
-      if (listItem == null && listItem == undefined) { // not found
+      let ref = endnoteReferenceID.replace(':', '-');
+      let listItem = (parentTableFootnotes.querySelector('.footnote') && 
+          parentTableFootnotes.querySelector('.footnote').id == ref);
+      if (!listItem) { // not found
         let listElement = document.createElement('li');
         listElement.id = endnoteReferenceID.replace(':', '-');
+        listElement.className = 'footnote';
         listElement.innerHTML = '<span>' + item.obj.querySelector('p').innerHTML + '</span>';
         parentTableFootnotes.appendChild(listElement);
         reference.innerHTML = String.fromCharCode(96 + parentTableFootnotes.children.length); // update footnote call
-        reference.href = '#' + endnoteReferenceID.replace(':', '-');
-      } else {
+        reference.href = '#' + ref;
+      } else { 
         let cnt = 0;
         let prev_elem = listItem;
         while (prev_elem) {
@@ -39,7 +43,7 @@ function moveEndnotesToFootnotes(item, counter) {
           prev_elem = prev_elem.previousElementSibling;
         }
         reference.innerHTML = String.fromCharCode(96 + cnt); // update footnote call 
-        reference.href = '#' + endnoteReferenceID.replace(':', '-');
+        reference.href = '#' + ref;
       }
     }
     else { // move Endnote into Footnote
@@ -74,7 +78,7 @@ function adfFootnotesForPDF() {
   let endNotesLists = document.querySelectorAll('div.footnotes ol');
   let footnoteCounter = 0;
   let footnoteList = [];
-
+  
   // For each list, update the endnote numbers
   endNotesLists.forEach(function (list) {
     let endNoteListItems = list.querySelectorAll('li');

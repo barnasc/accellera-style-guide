@@ -1,0 +1,162 @@
+// LISTS
+
+.wrapper:not(.contents-page) {
+  p + ol, p + ul {
+    margin-top: - 0.75 * $line-height-default;
+  }
+
+  // Ordered lists
+  :not(li) > ol {
+    padding-left: 0;
+
+    // First level
+    counter-reset: listCounter;
+    margin-left: 2 * $paragraph-indent;
+
+    p {
+      margin-bottom: $line-height-default / 4; // MB adjust paragraph line-height within list
+    }
+
+    blockquote {
+      margin: $line-height-default / 4 0; // MB adjust blockquote line-height within list
+    }
+
+    & > li {
+      list-style: none;
+      margin-top: $line-height-default / 4;
+      margin-left: $line-height-default;
+      counter-increment: listCounter;
+
+      &:before {
+        // First level is labelled with lowercase letter
+        content: counter(listCounter, lower-alpha) ") ";
+        left: $paragraph-indent;
+        position: absolute;
+      }
+    }
+  }
+
+  :not(li) > ol > li > ol {
+    padding-left: 0;
+
+    // Second level
+    counter-reset: sublist;
+    margin-left: $paragraph-indent;
+  
+    & > li {
+      list-style: none;
+      margin-top: $line-height-default / 4;
+      margin-left: $line-height-default;
+      counter-increment: sublist;
+
+      &:before {
+        // Second level is labelled with numbers
+        content: counter(sublist) ") ";
+        left: 2 * $paragraph-indent + $line-height-default;
+        position: absolute;
+      }
+    }
+  }
+
+  :not(li) > ol > li > ol > li > ol {
+    padding-left: 0;
+
+    // Third level
+    counter-reset: subsublist;
+    margin-left: $paragraph-indent;
+    
+    & > li {
+      list-style: none;
+      margin-top: $line-height-default / 4;
+      margin-left: $line-height-default;
+      counter-increment: subsublist;
+
+      &:before {
+        // Third level is labelled with lowercase roman numerals
+        content: counter(subsublist, lower-roman) ") ";
+        left: 3 * $paragraph-indent + 2 * $line-height-default;
+        position: absolute;
+      }
+    }
+  }
+
+  // Unordered lists
+  ul {
+    margin-left: 2 * $paragraph-indent;
+    padding-left: 0;
+
+    p {
+      margin-bottom: $line-height-default / 4; // MB adjust paragraph line-height within list
+    }
+
+    blockquote {
+      margin: $line-height-default / 4 0; // MB adjust blockquote line-height within list
+    }
+
+    & > li {
+      list-style: none;
+      margin-top: $line-height-default / 4;
+
+      &:before {
+        content: "―";
+        position: absolute;
+        left: 10pt;
+      }
+    }
+  }
+
+  li li:before {
+    left: 2 * $paragraph-indent + $line-height-default;
+  }
+}
+
+// enforce numbered list item (1st level only)
+.list-numbers {
+  counter-reset: customCounter !important;
+  & > li {
+    list-style: none;
+    counter-increment: customCounter !important;
+    &:before {
+      content: counter(customCounter) ") " !important;
+      position: absolute;
+    }
+  }
+}
+
+// list items without markers (1st level only)
+// works for ordered (ol) and unordered (ul) lists
+.list-no-markers {
+  margin-left: $paragraph-indent!important;
+  & > li {
+    list-style: none;
+    &:before {
+      content: ''!important;
+    }
+  }
+}
+
+// ordered list with custom start
+@for $i from 2 through 50 {
+  $start-value: $i - 1;
+  .list-start-#{$i} {
+    counter-reset: listCounter $start-value!important;
+  }
+}
+
+// PAGEDJS
+[data-pdf-engine="pagedjs"] {
+  [data-align-last-split-element='justify'] {
+    text-align-last: justify;
+  }
+  li, li * {
+    text-align: left !important;
+  }
+
+  li blockquote {
+    margin: 0;
+    
+    p {
+      margin: 0;
+    }
+  }
+}

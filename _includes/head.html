@@ -119,10 +119,15 @@ separate HTML files are merged into one body element.
         {% if page.header-left %} data-header-left="{{ page.header-left }}"{% else %} data-header-left="{{ page.title }}"{% endif %}
         {% if page.header-right %} data-header-right="{{ page.header-right }}"{% else %} data-header-right="{{ page.title }}"{% endif %}
         data-page-info="{{ title | truncate: 20 }}: {{ page.title | truncate: 20 }} • {{ page.url | split: "/" | last | split: "." | first }} • {{ site.time | date: "%-d %b %Y, %H:%M" }}"
-        {% if site.data.settings.screen-pdf.notes == "footnotes" or page.notes == "footnotes" %} data-page-footnotes{% endif %}
-        data-title="{% if title %}{{ title }}{% else %}{{ page.title }}{% endif %}"
+        {% if site.data.settings.screen-pdf.notes == "footnotes" %}
+            data-page-footnotes="book"
+        {% elsif page.notes == "footnotes" %}
+            data-page-footnotes="page"
+        {% endif %}
+        data-title="{% if version %}{{ version }}&#xa;{% endif %}{% if title %}{{ title }}{% else %}{{ page.title }}{% endif %}"
         data-creator="{% if creator %}{{ creator }}{% else %}{{ project.project-organisation }}{% endif %}"
         data-book-directory="{{ book-directory }}"
+        data-copyright='Copyright © {{ date | date: "%Y" }} {{ rightsholder }}. {{ rights }}{% if status == "Draft" %}&#xa;This is an unapproved {{ rightsholder }} Standards Draft, subject to change.{% endif %}'
         {% if is-translation %} data-translation="{{ language }}"{% endif %}
         data-variant="{{ variant }}">
 
@@ -186,7 +191,7 @@ separate HTML files are merged into one body element.
     {% endif %}>
 
     <div class="wrapper {{ book-directory }} {{ page.style }}{% if is-homepage == true %} home{% endif %}"
-        data-title="{% if book-title %}{{ book-title }}{% else %}{{ page.title }}{% endif %}"
+       data-title="{% if version %}{{ version }}&#xa;{% endif %}{% if title %}{{ title }}{% else %}{{ page.title }}{% endif %}"
         data-book-directory="{{ book-directory }}"
         {% if is-translation %} data-translation="{{ language }}"{% endif %}
         data-variant="{{ variant }}">
@@ -267,7 +272,7 @@ separate HTML files are merged into one body element.
         <div class="wrapper {{ book-directory }} {{ page.style }}{% if is-homepage == true %} home{% endif %}{% if is-search == true %} search-page{% endif %}{% if is-project-search == true %} project-search-page{% endif %}{% if is-book-search == true %} book-search-page{% endif %}"
         {% if page.accordion %}data-accordion-page="{{ page.accordion }}"{% endif %}
         {% if page.accordion-level and page.accordion-level != "" %}data-accordion-level="{{ page.accordion-level }}"{% endif %}
-        data-title="{% if title %}{{ title }}{% else %}{{ page.title }}{% endif %}"
+        data-title="{% if version %}{{ version }}&#xa;{% endif %}{% if title %}{{ title }}{% else %}{{ page.title }}{% endif %}"
         data-book-directory="{{ book-directory }}"
         {% if is-translation %} data-translation="{{ language }}"{% endif %}
         data-variant="{{ variant }}">
@@ -362,7 +367,7 @@ separate HTML files are merged into one body element.
     <div class="wrapper {{ book-directory }} {{ page.style }}{% if is-homepage == true %} home{% endif %}{% if is-search == true %} search-page{% endif %}{% if is-project-search == true %} project-search-page{% endif %}{% if is-book-search == true %} book-search-page{% endif %}"
         {% if page.accordion %}data-accordion-page="{{ page.accordion }}"{% endif %}
         {% if page.accordion-level and page.accordion-level != "" %}data-accordion-level="{{ page.accordion-level }}"{% endif %}
-        data-title="{% if title %}{{ title }}{% else %}{{ page.title }}{% endif %}"
+        data-title="{% if version %}{{ version }}&#xa;{% endif %}{% if title %}{{ title }}{% else %}{{ page.title }}{% endif %}"
         data-book-directory="{{ book-directory }}"
         {% if is-translation %} data-translation="{{ language }}"{% endif %}
         data-variant="{{ variant }}">

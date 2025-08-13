@@ -1,0 +1,12 @@
+// BOXES
+
+.box {
+  padding: 0.1em 0.6em;
+  border-color: $black;
+  border-radius: 0;
+  margin-bottom: 2 * $line-height-default;
+}
+
+.box.warning * {
+  text-align: center;
+}

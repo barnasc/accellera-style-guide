@@ -69,14 +69,7 @@ $pdf-notes: true !default;
 
     // True footnotes (we call them page-footnotes for clarity)
     // For styling see https://www.princexml.com/doc-prince/#footnote-calls
-
-    // Accellera deletion
-    // The numbers in front of footnote text
-    //*::footnote-marker {
-    //    float: left;
-    //    font-size: $font-size-default * $font-size-smaller;
-    //    width: 0;
-    //}
+    // https://www.princexml.com/doc/11/footnotes/
 
     // The page-footnote references in body text
     // Note that other <sup> styling is defined in
@@ -92,9 +85,10 @@ $pdf-notes: true !default;
     // The numbers in front of footnote text
     *::footnote-marker {
         float: left;
-        font-size: $font-size-default * 0.7;
+        font-size: $font-size-default * 0.6;
         vertical-align: super;
         line-height: none;
+        content: counter(footnote); // counter defined without tailing dot
     }
 
     .page-footnote {
@@ -105,7 +99,7 @@ $pdf-notes: true !default;
         text-indent: 0;
 
         span {
-            margin-left: 0.5em;
+            margin-left: 0.2em; // spacing between note label and text at bottom of page
         }
     }
 
