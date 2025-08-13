@@ -24,6 +24,7 @@ const {
   renderIndexComments,
   renderIndexLinks,
   renderMathjax,
+  renderNumbering,
   runPrince
 } = require('../helpers.js')
 const htmlFilePaths = require('../paths/htmlFilePaths.js')
@@ -47,7 +48,7 @@ async function web (argv) {
 
   try {
     await fs.emptyDir(process.cwd() + '/_site')
-    await renderNumbering(argv)
+    await renderNumbering(argv) // Accellera step
     await jekyll(argv)
   } catch (error) {
     console.log(error)

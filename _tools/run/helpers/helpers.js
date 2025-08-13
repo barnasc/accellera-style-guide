@@ -739,7 +739,7 @@ async function convertXHTMLFiles (argv) {
 // Render section numbering on the markdown sources
 async function renderNumbering (argv) {
   'use strict'
-
+  
   if (argv['section-numbering'] == -1) return; // skip when disabled
 
   const fileNames = markdownFilePaths(argv);
@@ -927,6 +927,46 @@ async function allFilesListed (argv, options) {
 
     resolve(data)
   })
+}
+
+// Accellera addition
+// Get array of paths to Markdown source files
+function markdownFilePaths (argv, extension) {
+  'use strict'
+
+  if (!extension) {
+    extension = '.md'
+  }
+
+  // Provide fallback book
+  let book
+  if (argv.book) {
+    book = argv.book
+  } else {
+    book = 'book'
+  }
+
+  const fileNames = fileList(argv)
+  const pathToTempSource = process.cwd() + '/.temp/' + book + '/'
+  const pathToSource = process.cwd() + '/' + book + '/'
+
+  fsPromises.mkdir(pathToTempSource, { recursive: true })
+
+  const paths = fileNames.map(function (filename) {
+    if (typeof filename === 'object') {
+      return {
+        source: fsPath.normalize(pathToSource + '/' + Object.keys(filename)[0] + extension),
+        temp: fsPath.normalize(pathToTempSource + '/' + Object.keys(filename)[0] + extension)
+      }
+    } else {
+      return {
+        source: fsPath.normalize(pathToSource + '/' + filename + extension),
+        temp: fsPath.normalize(pathToTempSource + '/' + filename + extension)
+      }
+    }
+  })
+
+  return paths
 }
 
 // Cleans out old .html files after .xhtml conversions
@@ -2074,6 +2114,7 @@ module.exports = {
   jekyll,
   logProcess,
   mathjaxEnabled,
+  markdownFilePaths, // Accellera addition
   newBook,
   openOutputFile,
   pdfHTMLTransformations,
