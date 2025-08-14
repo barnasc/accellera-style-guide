@@ -509,6 +509,7 @@ $pdf-page-setup-ingram: false !default;
 @import "template/partials/pdf-page-setup-ingram"; // Removes crop marks and sets trim for Ingram POD
 
 // Book features
+@import "template/partials/pdf-abstract-page"; // Accellera addition for IEEE and Accellera templates
 @import "template/partials/pdf-start-on-recto-or-verso"; // Starts chapters on a left- or right-hand-page
 @import "template/partials/pdf-page-start-depth"; // Sets a top margin on opening pages
 @import "template/partials/pdf-base-typography"; // Default typography for HTML elements

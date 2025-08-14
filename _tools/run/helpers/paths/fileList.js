@@ -62,11 +62,14 @@ function fileList (argv, book, language) {
  
   // If no language is specified, we can load
   // the files list for the default work.
+  // Addition Accellera: Check if metadata.products['print-pdf'] exists
   if (!language) {
     if (defaultPublished && metadata.products[format] && metadata.products[format].files) {
       files = metadata.products[format].files
     } else {
-      files = metadata.products['print-pdf'].files
+      if (defaultPublished && metadata.products['print-pdf'] && metadata.products['print-pdf'].files) {
+        files = metadata.products['print-pdf'].files
+      }
     }
 
     // If there was no files list, oops!

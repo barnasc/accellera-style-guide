@@ -45,11 +45,13 @@ function updateIDs (filename, dom, argv) {
         const linksArray = Array.from(links)
 
         // Filter out the external links, if there are links
+        // Accellera addition: add mailto: references
         let internalLinks
         if (linksArray.length > 0) {
           internalLinks = linksArray.filter(function (link) {
             let isInternal = true
             if (link.href.startsWith('https://') ||
+                link.href.startsWith('mailto:') ||
                 link.href.startsWith('http://')) {
               isInternal = false
             }
@@ -65,15 +67,26 @@ function updateIDs (filename, dom, argv) {
             let linkFilenameAsPrefix
             let linkID
 
+            // Accellera addition: 
+            // If the link still contains a reference to .md, it was probably missed by jekyll
+            // (e.g. link in footnote) and we replace .md here by .html
+            if (href.match(/\.md$/)) {
+              console.log(' found');
+              href = href.replace(/\.md$/, '.html')
+            }
+
             // If an href contains slashes, it includes a path,
             // potentially to another book in this project.
             // If it's in the same book, we can simply remove the path
             // and only keep the filename.
             // If it's to another book, we must leave the link as is,
             // and set a flag that prevents us from changing it later.
+            //
+            // Accellera addition:
+            // In case the href contains a starting slash, we need to remove the empty array element
             let hrefIsToThisBook = true
             if (href.match(/\//)) {
-              const hrefAsArray = href.replace(/^\.\.\//, '').split('/')
+              const hrefAsArray = href.replace(/^\.\.\//, '').split('/').filter(i => i != '')
               if (hrefAsArray[0] === argv.book) {
                 href = hrefAsArray.pop()
               } else {
