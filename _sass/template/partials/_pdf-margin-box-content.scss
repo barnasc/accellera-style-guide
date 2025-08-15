@@ -319,6 +319,7 @@ $pdf-margin-box-content: true !default;
 
     @include page-continued();
   }
+
   @if $first-page-margin-boxes == blank {
     @page frontmatter:first {
       @top-center { content: normal; }
@@ -387,7 +388,7 @@ $pdf-margin-box-content: true !default;
     }
   }
 
-  // No header on 'no-header' page
+  // Accellera: No header on 'no-header' page
   @page no-header:first {
     @top-center {
       content: normal;

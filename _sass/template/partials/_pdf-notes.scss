@@ -97,6 +97,7 @@ $pdf-notes: true !default;
         footnote-style-position: inside; // a prince-only property
         margin-bottom: 0;
         text-indent: 0;
+        page-break-inside: avoid; // Accellera: avoid page break inside listitem
 
         span {
             margin-left: 0.2em; // spacing between note label and text at bottom of page

@@ -14,11 +14,11 @@
     margin-left: 2 * $paragraph-indent;
 
     p {
-      margin-bottom: $line-height-default / 4; // MB adjust paragraph line-height within list
+      margin-bottom: $line-height-default / 4; // Accellera: adjust paragraph line-height within list
     }
 
     blockquote {
-      margin: $line-height-default / 4 0; // MB adjust blockquote line-height within list
+      margin: $line-height-default / 4 0; // Accellera: adjust blockquote line-height within list
     }
 
     & > li {
@@ -42,7 +42,7 @@
     // Second level
     counter-reset: sublist;
     margin-left: $paragraph-indent;
-  
+
     & > li {
       list-style: none;
       margin-top: $line-height-default / 4;
@@ -84,13 +84,14 @@
   ul {
     margin-left: 2 * $paragraph-indent;
     padding-left: 0;
+    margin-bottom: $line-height-default / 4; // Accellera: adjust paragraph line-height within list
 
     p {
-      margin-bottom: $line-height-default / 4; // MB adjust paragraph line-height within list
+      margin-bottom: $line-height-default / 4; // Accellera: adjust paragraph line-height within list
     }
 
     blockquote {
-      margin: $line-height-default / 4 0; // MB adjust blockquote line-height within list
+      margin: $line-height-default / 4 0; // Accellera: adjust blockquote line-height within list
     }
 
     & > li {
