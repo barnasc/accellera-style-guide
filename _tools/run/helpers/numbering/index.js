@@ -7,6 +7,7 @@ const { ebSlugify } = require('../../../gulp/helpers/utilities.js');
 async function numberSections(argv, files) {
 
   this.isChapter = false;
+  this.prevFile = '';
   this.inCodeBlock = false;
   this.inRawBlock = false;
   this.inCommentBlock = false;
@@ -63,7 +64,7 @@ async function numberSections(argv, files) {
     } else {
       filePrefix = file.temp; // there is no path
     }
-    return filePrefix.replace('md', 'html');
+    return filePrefix; //.replace('md', 'html');
   }
   
   function storeId(label, oldref, newref, title) {
@@ -136,18 +137,40 @@ async function numberSections(argv, files) {
       }
     });
 
+    if (this.inCodeBlock) {
+      console.log('error: file found with incomplete code block: ', this.prevFile);
+      process.exit(1);
+    }
+
     // instead of processing a single line, we merge
     // multiple lines into a single block, as this is
     // required for figures
     for await (const line of lineReader) {
       block += line + '\n';
-      if (line.replace(' ','') == '') { // make sure we detect 'empty lines' which only contain spaces
-        const updatedBlock = updateBlock(block, updateXref);
+
+      const codeBlockFound = line.match(/\`{3}/); 
+      if (codeBlockFound) {
+        //console.log('found:', codeBlockFound);
+        this.inCodeBlock = !this.inCodeBlock;
+        if (!this.inCodeBlock) { // write code block when end is found
+          //console.log('write:', block);
+          writeStream.write(block);
+          block = '';
+        }
+      }
+
+      if (!this.inCodeBlock) {
+      // process block when empty line (next paragraph) is found
+      // make sure we detect 'empty lines' which only contain spaces
+      if ((line.replace(' ','') == '')) { 
+        let updatedBlock = block;
+        updatedBlock = updateBlock(block, updateXref);
         writeStream.write(updatedBlock);
         block = '';
       }
+      }
     };
-
+    this.prevFile = file.temp;
     return waitForStreamClose(writeStream);
   }
 
@@ -156,8 +179,8 @@ async function numberSections(argv, files) {
     const chapter = block.match(/style: chapter/);
     const annex = block.match(/style: annex/);
     const xref = [...block.matchAll(/(\[[0-9a-zA-Z\s.\-]+\]|\[\])\((([^\s^\)]+)?)\)/gi)];
-    const codeblockStart = block.match(/^\`{3}/);
-    const codeblockEnd = block.match(/\`{3}\n\n$/);
+    //const codeblockStart = block.match(/^\`{3}/);
+    //const codeblockEnd = block.match(/\`{3}\n\n$/);
     const rawblockStart = block.match(/^\{\%\s*raw\s*\%\}/);
     const rawblockEnd = block.match(/\{\%\s*endraw\s*\%\}\n\n/);
     const commentblockStart = block.match(/^\{\%\s*comment\s*\%\}/);
@@ -173,9 +196,9 @@ async function numberSections(argv, files) {
       return block;
     }
 
-    if(codeblockStart && !codeblockEnd) {
-      this.inCodeBlock = true;
-    }
+    //if(codeblockStart && !codeblockEnd) {
+    //  this.inCodeBlock = true;
+    //}
 
     if(rawblockStart && !rawblockEnd) {
       this.inRawBlock = true;
@@ -216,9 +239,9 @@ async function numberSections(argv, files) {
       return updateEquationReference(block);
     }
 
-    if (codeblockEnd) {
-      this.inCodeBlock = false;
-    }
+    //if (codeblockEnd) {
+    //  this.inCodeBlock = false;
+    //}
 
     if(rawblockEnd) {
       this.inRawBlock = false;
@@ -418,7 +441,7 @@ async function numberSections(argv, files) {
     this.fileName = getFileName(files[i]);
     await processFile(files[i]);
   }
-  //console.log('section', this.section);
+  console.log('section', this.section);
 
   // 2nd pass to update xrefs
   console.log('INFO: Numbering 2nd pass...');

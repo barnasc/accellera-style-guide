@@ -64,6 +64,7 @@ $pdf-notes: true !default;
             margin-top: $line-height-default / 2;
             padding-top: $line-height-default / 2;
             font-size: $font-size-default * $font-size-smaller;
+            line-height: $line-height-default * 10;
         }
     }
 
@@ -98,9 +99,11 @@ $pdf-notes: true !default;
         margin-bottom: 0;
         text-indent: 0;
         page-break-inside: avoid; // Accellera: avoid page break inside listitem
+        line-height: $line-height-default * $font-size-smaller; // Accellera snaller line-heighy
 
         span {
             margin-left: 0.2em; // spacing between note label and text at bottom of page
+            
         }
     }
 

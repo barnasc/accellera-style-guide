@@ -22,20 +22,20 @@ Please contact the Technical Committee Chair in case of questions on the Accelle
 
 ## Creating a Docker image
 
-The Accellera Documentation Flow can be made available as Docker image. The example below shows how to build version v0.7 of the flow:
+The Accellera Documentation Flow can be made available as Docker image. The example below shows how to build version v0.8 of the flow:
 
 ```bash
-$ git clone --branch v0.7 https://github.com/OSCI-WG/adf.git
+$ git clone --branch v0.8 https://github.com/OSCI-WG/adf.git
 # enter your GitHub account and password/token to clone the repository
 
 $ cd adf
-$ docker build -t adf:v0.7 .
+$ docker build -t adf:v0.8 .
 ```
 
 Alternatively, a pre-build Docker image of the flow can be downloaded from the Accellera Technical Committee [documentation workspace](https://workspace.accellera.org/wg/docwg/document/13270). Load the Docker image as follows:
 
 ```bash
-$ docker load -i adf_v0.7.tar.gz
+$ docker load -i adf_v0.8.tar.gz
 ```
 
 ## Acknowledgment

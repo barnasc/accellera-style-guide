@@ -39,7 +39,7 @@ variants:
 # ------------
 # Choose whether to disable dynamic indexing (false to disable).
 # Disabling dynamic indexing will speed up outputs.
-dynamic-indexing: true
+dynamic-indexing: false
 
 # ----------------------------------------------------------
 # Print-PDF settings

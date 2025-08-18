@@ -71,7 +71,7 @@ function updateIDs (filename, dom, argv) {
             // If the link still contains a reference to .md, it was probably missed by jekyll
             // (e.g. link in footnote) and we replace .md here by .html
             if (href.match(/\.md$/)) {
-              console.log(' found');
+              console.warn('WARNING: unresolved reference to Markdown file found in page footnote. Replaced by reference to HTML file');
               href = href.replace(/\.md$/, '.html')
             }
 

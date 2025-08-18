@@ -23,21 +23,16 @@ collections:
 # Exclude list
 exclude:
   # Build tools
-  - README.md
-  - LICENSE
-  - run.js
   - Gemfile
   - Gemfile.lock
-  - package.json
-  - package-lock.json
+  - README*
+  - LICENSE*
+  - CHANGELOG*
   - node_modules
   - gulpfile.js
-  - eslint.json
-  - CHANGELOG.md
-  - /*/images/source
+  - package.json
+  - package-lock.json
   - Docker*
-  - netlify.toml
-  - setup.sh
 
   # Included as-is in other files, no need to process
   - /assets/js/annotation.js
@@ -95,6 +90,8 @@ exclude:
   - /*/package.opf
   - /*/toc.ncx
   - /books/*
+  - /bin/*
+  - /tmp/*
 
   # Exclude web images only if you keep_files them below
   # - /*/images/web

@@ -16,7 +16,6 @@ baseurl: ""
 # Exclude from this build
 exclude:
   # Build tools
-  - run.js
   - Gemfile
   - Gemfile.lock
   - README*
@@ -27,11 +26,7 @@ exclude:
   - gulpfile.js
   - package.json
   - package-lock.json
-  - CNAME
-  - .sass-cache
   - Docker*
-  - netlify.toml
-  - setup.sh
 
   # Included as-is in other files, no need to process
   - /assets/js/annotation.js
@@ -91,4 +86,6 @@ exclude:
   - /*/styles/web*
   - /*/styles/epub*
   - /books/*
+  - /bin/*
+  - /tmp/*
 

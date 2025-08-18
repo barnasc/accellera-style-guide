@@ -223,6 +223,7 @@ async function renderIndexCommentsAsTargets (done) {
 async function renderIndexListReferences (done) {
   'use strict'
   const paths = await htmlFilePaths(null, null, { allFiles: true })
+  console.log('htmlpaths', paths)
   gulp.src(paths, { base: './', allowEmpty: true })
     .pipe(cheerio({
       run: function ($) {

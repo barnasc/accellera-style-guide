@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/barnasc/rouge.git
+  revision: 71bba40711bc2885d30b81582f2c6e46cb997778
+  branch: 3.30.0
+  specs:
+    rouge (3.30.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -264,7 +271,6 @@ GEM
     rb-inotify (0.11.1)
       ffi (~> 1.0)
     rexml (3.3.9)
-    rouge (3.30.0)
     rubyzip (2.3.2)
     safe_yaml (1.0.5)
     sass (3.7.4)
@@ -305,6 +311,7 @@ PLATFORMS
 DEPENDENCIES
   github-pages
   kramdown-parser-gfm
+  rouge!
   tzinfo-data
 
 BUNDLED WITH

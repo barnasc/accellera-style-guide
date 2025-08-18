@@ -19,8 +19,9 @@ function ebSlugify (string, indexTerm) {
       .replace(p, function (c) {
         return b.charAt(a.indexOf(c))
       }) // Replace special characters
+      .replace(/\//g, '') // Trim /                               **Changed by Accellera**
       .replace(/&/g, '-and-') // Replace & with 'and'
-      .replace(/--+/g, '-') // Replace multiple - with single -
+      //.replace(/--+/g, '-') // Replace multiple - with single - **Changed by Accellera**
       .replace(/^-+/, '') // Trim - from start of text
       .replace(/-+$/, '') // Trim - from end of text
       .replace(/-\\\\-/g, '--') // Replace \\ with --
@@ -33,10 +34,10 @@ function ebSlugify (string, indexTerm) {
       .replace(p, function (c) {
         return b.charAt(a.indexOf(c))
       }) // Replace special characters
-      .replace(/\//g, '-') // Replace any / with - (in non-index strings)
+      .replace(/\//g, '') // Trim / (in non-index strings)        **Changed by Accellera**
       .replace(/&/g, '-and-') // Replace & with 'and'
       .replace(/[^\w-]+/g, '') // Remove all non-word characters
-      .replace(/--+/g, '-') // Replace multiple - with single -
+      //.replace(/--+/g, '-') // Replace multiple - with single - **Changed by Accellera**
       .replace(/^-+/, '') // Trim - from start of text
       .replace(/-+$/, '') // Trim - from end of text
   } else {

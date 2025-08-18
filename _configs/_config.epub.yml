@@ -12,21 +12,16 @@ collections:
 
 exclude:
   # The usual excludes from _config.yml
-  - run.js
   - Gemfile
   - Gemfile.lock
   - README*
   - LICENSE*
   - CHANGELOG*
   - node_modules
-  - eslint.json
   - gulpfile.js
   - package.json
   - package-lock.json
-  - CNAME
   - Docker*
-  - netlify.toml
-  - setup.sh
 
   # Included as-is in other files, no need to process
   - /assets/js/annotation.js
@@ -86,6 +81,8 @@ exclude:
   - /*/images/web
   - /*/images/app
   - /books/*
+  - /bin/*
+  - /tmp/*
 
   # Temporarily exclude book files for faster builds
   # - assets
