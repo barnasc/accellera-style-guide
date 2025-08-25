@@ -7,8 +7,8 @@ function ebSlugify (string, indexTerm) {
   'use strict'
 
   // updated slug for Accellera
-  const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·,;'
-  const b = 'aaaaaaaaaacccddeeeeeeeegghiiiiiilmnnnnooooooooprrsssssttuuuuuuuuuwxyyzzz---'
+  const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·;'
+  const b = 'aaaaaaaaaacccddeeeeeeeegghiiiiiilmnnnnooooooooprrsssssttuuuuuuuuuwxyyzzz--'
   const p = new RegExp(a.split('').join('|'), 'g')
 
   if (string && indexTerm) {
@@ -19,6 +19,7 @@ function ebSlugify (string, indexTerm) {
       .replace(p, function (c) {
         return b.charAt(a.indexOf(c))
       }) // Replace special characters
+      .replace(/,/g, '')  // remove ,
       .replace(/\//g, '') // Trim /                               **Changed by Accellera**
       .replace(/&/g, '-and-') // Replace & with 'and'
       //.replace(/--+/g, '-') // Replace multiple - with single - **Changed by Accellera**
@@ -34,6 +35,7 @@ function ebSlugify (string, indexTerm) {
       .replace(p, function (c) {
         return b.charAt(a.indexOf(c))
       }) // Replace special characters
+      .replace(/,/g, '')  // remove ,
       .replace(/\//g, '') // Trim / (in non-index strings)        **Changed by Accellera**
       .replace(/&/g, '-and-') // Replace & with 'and'
       .replace(/[^\w-]+/g, '') // Remove all non-word characters

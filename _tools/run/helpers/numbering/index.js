@@ -338,7 +338,7 @@ async function numberSections(argv, files) {
         nblock = nblock.replaceAll('('+xref[i][2]+')', '(\u00A4\u00A4'+ref+id.ref+')');
         //console.log('new:', nblock);
       } else {
-        console.warn('WARNING: xref - no cross reference found for ID', xref[i][2]);
+        console.warn('WARNING: xref - no cross reference found for ID', xref[i][2], 'in file:', this.fileName);
       }
     }
     // TODO workaround to avoid replacing same xref twice, by adding a special
@@ -441,7 +441,7 @@ async function numberSections(argv, files) {
     this.fileName = getFileName(files[i]);
     await processFile(files[i]);
   }
-  console.log('section', this.section);
+  //console.log('section', this.section);
 
   // 2nd pass to update xrefs
   console.log('INFO: Numbering 2nd pass...');

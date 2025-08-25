@@ -64,6 +64,9 @@ $font-code: "SF Mono", "Monaco", "Inconsolata", "Fira Mono", "Droid Sans Mono", 
 $font-size-default: 1.3rem !default;
 $line-height-default: 2rem !default;
 
+// Set font size for code blocks
+$font-code-size: 90% !default;
+
 // How many times bigger than font-size-default
 // for features like headings and pullquotes?
 $font-size-bigger: 2 !default;

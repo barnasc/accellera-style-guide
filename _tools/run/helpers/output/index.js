@@ -48,6 +48,7 @@ async function web (argv) {
 
   try {
     await fs.emptyDir(process.cwd() + '/_site')
+    await copyBooks(argv, '/books/','/'); // Accellera step
     await renderNumbering(argv) // Accellera step
     await jekyll(argv)
   } catch (error) {
@@ -89,12 +90,14 @@ async function epub (argv) {
 
   try {
     await fs.emptyDir(process.cwd() + '/_site')
+    await copyBooks(argv, '/books/','/'); // Accellera step
     await renderNumbering(argv); // Accellera step
     await jekyll(argv)
     await processContent(argv)
     await epubHTMLTransformations(argv)
     await renderIndexComments(argv)
     await renderIndexLinks(argv)
+    await copyBooks(argv, '/','/_output/update/', true); // Accellera step
     await convertXHTMLLinks(argv)
     await convertXHTMLFiles(argv)
     await cleanHTMLFiles(argv)
